@@ -86,10 +86,10 @@ export class Teams implements OnInit {
   // =========================
 
   private coupleApi =
-    'http://localhost:5001/api/couples';
+    'https://construction-side-api.onrender.com/api/couples';
 
   private siteApi =
-    'http://localhost:5001/api/sites';
+    'https://construction-side-api.onrender.com/api/sites';
 
 
   // =========================

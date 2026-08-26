@@ -98,7 +98,7 @@ export interface LabourSearchResponse {
 export class LabourStatementService {
 
   private apiUrl =
-    'http://localhost:5001/api/labour-statements';
+    'https://construction-side-api.onrender.com/api/labour-statements';
 
   constructor(
     private http: HttpClient

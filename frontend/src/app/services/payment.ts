@@ -60,7 +60,7 @@ export interface Payment {
 export class PaymentService {
 
   private apiUrl =
-    'http://localhost:5001/api/payments';
+    'https://construction-side-api.onrender.com/api/payments';
 
 
   constructor(

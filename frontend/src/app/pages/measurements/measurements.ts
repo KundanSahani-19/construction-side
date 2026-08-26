@@ -101,7 +101,7 @@ export class Measurements implements OnInit {
   // ======================================================
 
   private apiUrl =
-    'http://localhost:5001/api/measurements';
+    'https://construction-side-api.onrender.com/api/measurements';
 
 
   // ======================================================

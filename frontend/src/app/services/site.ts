@@ -23,7 +23,7 @@ export interface Site {
 })
 export class SiteService {
 
-  private apiUrl = 'http://localhost:5001/api/sites';
+  private apiUrl = 'https://construction-side-api.onrender.com/api/sites';
 
   constructor(private http: HttpClient) {}
 

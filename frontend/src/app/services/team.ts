@@ -47,7 +47,7 @@ export interface Team {
 })
 export class TeamService {
 
-  private apiUrl = 'http://localhost:5001/api/teams';
+  private apiUrl = 'https://construction-side-api.onrender.com/api/teams';
 
   constructor(
     private http: HttpClient

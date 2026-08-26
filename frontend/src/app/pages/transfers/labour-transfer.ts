@@ -18,7 +18,7 @@ export interface LabourTransfer {
 export class LabourTransferService {
 
   private apiUrl =
-    'http://localhost:5001/api/labour-transfers';
+    'https://construction-side-api.onrender.com/api/labour-transfers';
 
   constructor(
     private http: HttpClient

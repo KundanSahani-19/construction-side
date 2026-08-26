@@ -79,7 +79,7 @@ export interface MeasurementResponse {
 export class MeasurementService {
 
   private apiUrl =
-    'http://localhost:5001/api/measurements';
+    'https://construction-side-api.onrender.com/api/measurements';
 
   constructor(
     private http: HttpClient

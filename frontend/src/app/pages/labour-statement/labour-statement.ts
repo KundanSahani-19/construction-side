@@ -174,7 +174,7 @@ export class LabourStatement implements OnInit {
   // ====================================================
 
   private attendanceApi =
-    'http://localhost:5001/api/attendance';
+    'https://construction-side-api.onrender.com/api/attendance';
 
 
   constructor(

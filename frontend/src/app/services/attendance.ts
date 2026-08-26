@@ -21,7 +21,7 @@ export interface Attendance {
 })
 export class AttendanceService {
 
-  private apiUrl = 'http://localhost:5001/api/attendance';
+  private apiUrl = 'https://construction-side-api.onrender.com/api/attendance';
 
   constructor(private http: HttpClient) {}
 

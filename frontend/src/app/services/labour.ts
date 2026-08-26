@@ -156,7 +156,7 @@ export class LabourService {
   // ====================================================
 
   private apiUrl =
-    'http://localhost:5001/api/labours';
+    'https://construction-side-api.onrender.com/api/labours';
 
   // ====================================================
   // CONSTRUCTOR

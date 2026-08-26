@@ -177,22 +177,22 @@ export class AttendanceComponent
 // ======================================================
 
 private coupleApi =
-  'http://localhost:5001/api/couples';
+  'https://construction-side-api.onrender.com/api/couples';
 
 private siteApi =
-  'http://localhost:5001/api/sites';
+  'https://construction-side-api.onrender.com/api/sites';
 
 private attendanceApi =
-  'http://localhost:5001/api/couple-attendance';
+  'https://construction-side-api.onrender.com/api/couple-attendance';
 
 private labourApi =
-  'http://localhost:5001/api/labours';
+  'https://construction-side-api.onrender.com/api/labours';
 
 private advanceApi =
-  'http://localhost:5001/api/labour-advances';
+  'https://construction-side-api.onrender.com/api/labour-advances';
 
 private statementApi =
-  'http://localhost:5001/api/labour-statements';
+  'https://construction-side-api.onrender.com/api/labour-statements';
 
 
 // ======================================================
