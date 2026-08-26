@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 // ==========================================
 // EXISTING ROUTES
 // ==========================================
+
 const siteRoutes = require("./routes/siteRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const labourRoutes = require("./routes/labourRoutes");
@@ -20,11 +21,15 @@ const measurementRoutes = require("./routes/measurementRoutes");
 // ==========================================
 // LABOUR ADVANCE
 // ==========================================
-const labourAdvanceRoutes = require("./routes/LabourAdvanceRoutes");
+
+const labourAdvanceRoutes = require(
+  "./routes/LabourAdvanceRoutes"
+);
 
 // ==========================================
 // LABOUR STATEMENT
 // ==========================================
+
 const labourStatementRoutes = require(
   "./routes/LabourStatementRoutes"
 );
@@ -32,26 +37,41 @@ const labourStatementRoutes = require(
 // ==========================================
 // AUTHENTICATION
 // ==========================================
-const authRoutes = require("./routes/authRoutes");
+
+const authRoutes = require(
+  "./routes/authRoutes"
+);
+
+// ==========================================
+// JWT AUTH MIDDLEWARE
+// ==========================================
+
+const {
+  protect,
+} = require("./middleware/authMiddleware");
 
 // ==========================================
 // ENVIRONMENT
 // ==========================================
+
 dotenv.config();
 
 // ==========================================
 // APP
 // ==========================================
+
 const app = express();
 
 // ==========================================
 // DATABASE
 // ==========================================
+
 connectDB();
 
 // ==========================================
 // MIDDLEWARE
 // ==========================================
+
 app.use(
   cors({
     origin: true,
@@ -76,113 +96,143 @@ app.use(
 // API ROUTES
 // ==========================================
 
-// ------------------------------------------
-// AUTHENTICATION
-// ------------------------------------------
+// ==========================================
+// AUTHENTICATION — PUBLIC
+// ==========================================
+
 app.use(
   "/api/auth",
   authRoutes
 );
 
+// ==========================================
+// PROTECTED API ROUTES
+// ==========================================
+
 // ------------------------------------------
 // SITES
 // ------------------------------------------
+
 app.use(
   "/api/sites",
+  protect,
   siteRoutes
 );
 
 // ------------------------------------------
 // PAYMENTS
 // ------------------------------------------
+
 app.use(
   "/api/payments",
+  protect,
   paymentRoutes
 );
 
 // ------------------------------------------
 // LABOURS
 // ------------------------------------------
+
 app.use(
   "/api/labours",
+  protect,
   labourRoutes
 );
 
 // ------------------------------------------
 // LABOUR ASSIGNMENTS
 // ------------------------------------------
+
 app.use(
   "/api/labour-assignments",
+  protect,
   labourAssignmentRoutes
 );
 
 // ------------------------------------------
 // TEAMS
 // ------------------------------------------
+
 app.use(
   "/api/teams",
+  protect,
   teamRoutes
 );
 
 // ------------------------------------------
 // INDIVIDUAL ATTENDANCE
 // ------------------------------------------
+
 app.use(
   "/api/attendance",
+  protect,
   attendanceRoutes
 );
 
 // ------------------------------------------
 // LABOUR TRANSFERS
 // ------------------------------------------
+
 app.use(
   "/api/labour-transfers",
+  protect,
   labourTransferRoutes
 );
 
 // ------------------------------------------
 // COUPLES / JODI
 // ------------------------------------------
+
 app.use(
   "/api/couples",
+  protect,
   coupleRoutes
 );
 
 // ------------------------------------------
 // COUPLE ATTENDANCE
 // ------------------------------------------
+
 app.use(
   "/api/couple-attendance",
+  protect,
   coupleAttendanceRoutes
 );
 
 // ------------------------------------------
 // MEASUREMENTS
 // ------------------------------------------
+
 app.use(
   "/api/measurements",
+  protect,
   measurementRoutes
 );
 
 // ==========================================
 // LABOUR ADVANCE
 // ==========================================
+
 app.use(
   "/api/labour-advances",
+  protect,
   labourAdvanceRoutes
 );
 
 // ==========================================
 // LABOUR STATEMENT
 // ==========================================
+
 app.use(
   "/api/labour-statements",
+  protect,
   labourStatementRoutes
 );
 
 // ==========================================
-// HEALTH CHECK
+// HEALTH CHECK — PUBLIC
 // ==========================================
+
 app.get(
   "/",
   (req, res) => {
@@ -197,6 +247,7 @@ app.get(
 // ==========================================
 // 404 API HANDLER
 // ==========================================
+
 app.use(
   (req, res) => {
     res.status(404).json({
@@ -209,6 +260,7 @@ app.use(
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
+
 app.use(
   (error, req, res, next) => {
     console.error(
@@ -230,6 +282,7 @@ app.use(
 // ==========================================
 // SERVER
 // ==========================================
+
 const PORT =
   process.env.PORT || 5001;
 
