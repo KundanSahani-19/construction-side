@@ -1,0 +1,779 @@
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.teams-page {
+  min-height: 100vh;
+  padding: 30px 36px 50px;
+  background: #f5f7fb;
+  color: #111827;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.page-header p {
+  margin: 7px 0 0;
+  color: #7b8494;
+  font-size: 13px;
+}
+
+.add-btn {
+  min-height: 42px;
+  padding: 0 18px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.add-btn:hover {
+  background: #000000;
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   FORM CARD
+========================= */
+
+.form-card {
+  margin-bottom: 22px;
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 15px;
+
+  box-shadow:
+    0 3px 10px rgba(15, 23, 42, 0.04);
+}
+
+.form-card h2 {
+  margin: 0 0 22px;
+
+  color: #111827;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+
+/* =========================
+   BASIC FORM
+========================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #374151;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+
+  border: 1px solid #dfe3e8;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #111827;
+
+  padding: 11px 12px;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #a1a8b3;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #111827;
+
+  box-shadow:
+    0 0 0 3px rgba(17, 24, 39, 0.06);
+}
+
+textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+
+/* =========================
+   MEMBERS
+========================= */
+
+.members-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+
+  margin-top: 22px;
+}
+
+.member-section {
+  padding: 20px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.member-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+.member-number {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.member-title h3 {
+  margin: 0;
+
+  color: #111827;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.member-title p {
+  margin: 3px 0 0;
+
+  color: #8a93a3;
+  font-size: 11px;
+}
+
+.member-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.rate-field {
+  grid-column: 1 / -1;
+}
+
+.rate-input {
+  display: flex;
+  align-items: center;
+
+  border: 1px solid #dfe3e8;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  overflow: hidden;
+}
+
+.rate-input:focus-within {
+  border-color: #111827;
+
+  box-shadow:
+    0 0 0 3px rgba(17, 24, 39, 0.06);
+}
+
+.rate-input span {
+  width: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rate-input input {
+  border: none;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  padding-left: 5px;
+}
+
+.rate-input input:focus {
+  box-shadow: none;
+}
+
+.rate-field small {
+  display: block;
+  margin-top: 5px;
+
+  color: #8a93a3;
+  font-size: 10px;
+}
+
+
+/* =========================
+   RATE SUMMARY
+========================= */
+
+.rate-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 12px;
+
+  margin-top: 18px;
+  padding: 15px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.rate-summary > div {
+  padding: 13px;
+
+  background: #ffffff;
+
+  border: 1px solid #edf0f3;
+  border-radius: 9px;
+}
+
+.rate-summary span {
+  display: block;
+
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.rate-summary strong {
+  display: block;
+  margin-top: 6px;
+
+  color: #111827;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.rate-summary .total-rate {
+  background: #111827;
+  border-color: #111827;
+}
+
+.rate-summary .total-rate span,
+.rate-summary .total-rate strong {
+  color: #ffffff;
+}
+
+.rate-summary .total-rate strong {
+  font-size: 20px;
+}
+
+
+/* =========================
+   NOTES
+========================= */
+
+.full-field {
+  margin-top: 18px;
+}
+
+
+/* =========================
+   FORM ACTIONS
+========================= */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.cancel-btn,
+.save-btn {
+  min-height: 42px;
+  padding: 0 18px;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.cancel-btn {
+  border: 1px solid #dfe3e8;
+
+  background: #ffffff;
+  color: #374151;
+}
+
+.cancel-btn:hover {
+  background: #f9fafb;
+}
+
+.save-btn {
+  border: none;
+
+  background: #111827;
+  color: #ffffff;
+}
+
+.save-btn:hover {
+  background: #000000;
+}
+
+.save-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   TABLE CARD
+========================= */
+
+.table-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 15px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 3px 10px rgba(15, 23, 42, 0.04);
+}
+
+.table-header {
+  min-height: 76px;
+
+  padding: 18px 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  border-bottom: 1px solid #edf0f3;
+}
+
+.table-header h2 {
+  margin: 0;
+
+  color: #111827;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.table-header p {
+  margin: 5px 0 0;
+
+  color: #8a93a3;
+  font-size: 11px;
+}
+
+.header-summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 7px 11px;
+
+  background: #f3f4f6;
+
+  border-radius: 8px;
+
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.header-summary strong {
+  color: #111827;
+  font-size: 12px;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 1200px;
+
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f8fafc;
+}
+
+th {
+  padding: 13px 16px;
+
+  text-align: left;
+
+  color: #6b7280;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+td {
+  padding: 15px 16px;
+
+  border-top: 1px solid #edf0f3;
+
+  color: #374151;
+
+  font-size: 12px;
+
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+  background: #fafbfc;
+}
+
+td strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+td small {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #8a93a3;
+
+  font-size: 10px;
+}
+
+
+/* =========================
+   RATE BADGE
+========================= */
+
+.rate-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 9px;
+
+  border-radius: 7px;
+
+  background: #f3f4f6;
+  color: #111827;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.total-rate-text {
+  white-space: nowrap;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  background: #dcfce7;
+  color: #15803d;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.status.inactive {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+
+/* =========================
+   DELETE
+========================= */
+
+.delete-btn {
+  border: 1px solid #fecaca;
+
+  background: #ffffff;
+  color: #dc2626;
+
+  padding: 7px 11px;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #fef2f2;
+}
+
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty {
+  min-height: 260px;
+
+  padding: 45px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  color: #6b7280;
+}
+
+.empty > div {
+  margin-bottom: 10px;
+
+  font-size: 40px;
+}
+
+.empty h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 15px;
+}
+
+.empty p {
+  margin: 7px 0 0;
+
+  color: #8a93a3;
+
+  font-size: 12px;
+}
+
+.empty-add-btn {
+  margin-top: 16px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #111827;
+  color: #ffffff;
+
+  padding: 10px 15px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.empty-add-btn:hover {
+  background: #000000;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+
+  .teams-page {
+    padding: 25px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .members-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 750px) {
+
+  .teams-page {
+    padding: 20px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+  .form-card {
+    padding: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .rate-field {
+    grid-column: auto;
+  }
+
+  .rate-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .table-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .teams-page {
+    padding: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 23px;
+  }
+
+  .member-section {
+    padding: 15px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-btn,
+  .save-btn {
+    width: 100%;
+  }
+
+}

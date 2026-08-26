@@ -1,0 +1,586 @@
+<div class="payments-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        Client Payments
+      </h1>
+
+      <p>
+        Track money received from construction sites
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="showForm = !showForm"
+    >
+      + Add Payment
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       ADD PAYMENT FORM
+  ========================== -->
+
+  @if (showForm) {
+
+    <div class="form-card">
+
+      <h2>
+        Add Payment
+      </h2>
+
+
+      <form
+        (ngSubmit)="createPayment()"
+      >
+
+        <div class="form-grid">
+
+
+          <!-- SITE -->
+
+          <div>
+
+            <label>
+              Construction Site *
+            </label>
+
+            <select
+              [(ngModel)]="newPayment.site"
+              name="site"
+              required
+            >
+
+              <option value="">
+                Select Site
+              </option>
+
+              @for (
+                site of sites;
+                track site._id
+              ) {
+
+                <option
+                  [value]="site._id"
+                >
+                  {{ site.siteName }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <!-- AMOUNT -->
+
+          <div>
+
+            <label>
+              Amount *
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="newPayment.amount"
+              name="amount"
+              min="1"
+              placeholder="₹ Amount"
+              required
+            />
+
+          </div>
+
+
+          <!-- DATE -->
+
+          <div>
+
+            <label>
+              Payment Date *
+            </label>
+
+            <input
+              type="date"
+              [(ngModel)]="newPayment.paymentDate"
+              name="paymentDate"
+              required
+            />
+
+          </div>
+
+
+          <!-- PAYMENT TYPE -->
+
+          <div>
+
+            <label>
+              Payment Type
+            </label>
+
+            <select
+              [(ngModel)]="newPayment.paymentType"
+              name="paymentType"
+            >
+
+              <option value="Advance">
+                Advance
+              </option>
+
+              <option value="Salary">
+                Salary
+              </option>
+
+              <option value="Wages">
+                Wages
+              </option>
+
+              <option value="Overtime">
+                Overtime
+              </option>
+
+              <option value="Final Payment">
+                Final Payment
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- PAYMENT MODE -->
+
+          <div>
+
+            <label>
+              Payment Mode
+            </label>
+
+            <select
+              [(ngModel)]="newPayment.paymentMode"
+              name="paymentMode"
+            >
+
+              <option value="Cash">
+                Cash
+              </option>
+
+              <option value="Bank Transfer">
+                Bank Transfer
+              </option>
+
+              <option value="UPI">
+                UPI
+              </option>
+
+              <option value="Cheque">
+                Cheque
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- REFERENCE -->
+
+          <div>
+
+            <label>
+              Reference Number
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="newPayment.referenceNumber"
+              name="referenceNumber"
+              placeholder="Transaction / Cheque No."
+            />
+
+          </div>
+
+
+          <!-- REASON -->
+
+          <div>
+
+            <label>
+              Reason
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="newPayment.reason"
+              name="reason"
+              placeholder="Payment reason"
+            />
+
+          </div>
+
+
+        </div>
+
+
+        <!-- NOTES -->
+
+        <div class="full-field">
+
+          <label>
+            Notes
+          </label>
+
+          <textarea
+            [(ngModel)]="newPayment.notes"
+            name="notes"
+            placeholder="Payment related notes..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="cancelForm()"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="saving"
+          >
+
+            @if (saving) {
+
+              Saving...
+
+            } @else {
+
+              Save Payment
+
+            }
+
+          </button>
+
+        </div>
+
+
+      </form>
+
+    </div>
+
+  }
+
+
+  <!-- =========================
+       PAYMENT SUMMARY
+  ========================== -->
+
+  <div class="summary-card">
+
+    <div>
+
+      <span>
+        Total Payments
+      </span>
+
+      <strong>
+        {{ payments.length }}
+      </strong>
+
+    </div>
+
+
+    <div>
+
+      <span>
+        Total Received
+      </span>
+
+      <strong>
+        ₹{{ formatMoney(getTotalPayments()) }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       PAYMENT HISTORY
+  ========================== -->
+
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Payment History
+        </h2>
+
+        <p>
+          All client payments
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+      <div class="empty">
+
+        <div>
+          ⏳
+        </div>
+
+        <h3>
+          Loading payments...
+        </h3>
+
+      </div>
+
+    }
+
+
+    <!-- EMPTY -->
+
+    @else if (payments.length === 0) {
+
+      <div class="empty">
+
+        <div>
+          💳
+        </div>
+
+        <h3>
+          No payments yet
+        </h3>
+
+        <p>
+          Add your first client payment.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- TABLE -->
+
+    @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Date
+              </th>
+
+              <th>
+                Site
+              </th>
+
+              <th>
+                Amount
+              </th>
+
+              <th>
+                Type
+              </th>
+
+              <th>
+                Mode
+              </th>
+
+              <th>
+                Reference
+              </th>
+
+              <th>
+                Reason
+              </th>
+
+              <th>
+                Notes
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              payment of payments;
+              track payment._id
+            ) {
+
+              <tr>
+
+
+                <!-- DATE -->
+
+                <td>
+
+                  {{ payment.paymentDate
+                    | date:'dd MMM yyyy' }}
+
+                </td>
+
+
+                <!-- SITE -->
+
+                <td>
+
+                  <strong>
+
+                    {{ getSiteName(
+                      payment.site
+                    ) }}
+
+                  </strong>
+
+                </td>
+
+
+                <!-- AMOUNT -->
+
+                <td class="amount">
+
+                  ₹{{ formatMoney(
+                    payment.amount
+                  ) }}
+
+                </td>
+
+
+                <!-- PAYMENT TYPE -->
+
+                <td>
+
+                  <span class="type">
+
+                    {{ getPaymentType(
+                      payment
+                    ) }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- MODE -->
+
+                <td>
+
+                  <span class="mode">
+
+                    {{ payment.paymentMode }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- REFERENCE -->
+
+                <td>
+
+                  {{ payment.referenceNumber || '-' }}
+
+                </td>
+
+
+                <!-- REASON -->
+
+                <td>
+
+                  {{ payment.reason || '-' }}
+
+                </td>
+
+
+                <!-- NOTES -->
+
+                <td>
+
+                  {{ payment.notes || '-' }}
+
+                </td>
+
+
+                <!-- DELETE -->
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="delete-btn"
+                    (click)="deletePayment(payment._id)"
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

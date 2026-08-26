@@ -1,0 +1,459 @@
+<div class="sites-page">
+
+  <!-- =========================
+       PAGE HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Construction Sites</h1>
+      <p>Manage all construction sites</p>
+    </div>
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="showForm = !showForm"
+    >
+      + Add Site
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       ADD SITE FORM
+  ========================== -->
+
+  @if (showForm) {
+
+    <div class="form-card">
+
+      <h2>Add New Site</h2>
+
+      <form
+        #siteForm="ngForm"
+        (ngSubmit)="createSite()"
+      >
+
+        <div class="form-grid">
+
+          <!-- SITE NAME -->
+
+          <div>
+            <label for="siteName">
+              Site Name
+            </label>
+
+            <input
+              id="siteName"
+              type="text"
+              [(ngModel)]="newSite.siteName"
+              name="siteName"
+              placeholder="Enter site name"
+              required
+            />
+          </div>
+
+
+          <!-- CLIENT NAME -->
+
+          <div>
+            <label for="clientName">
+              Client Name
+            </label>
+
+            <input
+              id="clientName"
+              type="text"
+              [(ngModel)]="newSite.clientName"
+              name="clientName"
+              placeholder="Enter client name"
+              required
+            />
+          </div>
+
+
+          <!-- CLIENT MOBILE -->
+
+          <div>
+            <label for="clientMobile">
+              Client Mobile
+            </label>
+
+            <input
+              id="clientMobile"
+              type="tel"
+              [(ngModel)]="newSite.clientMobile"
+              name="clientMobile"
+              placeholder="Enter mobile number"
+            />
+          </div>
+
+
+          <!-- LOCATION -->
+
+          <div>
+            <label for="location">
+              Location
+            </label>
+
+            <input
+              id="location"
+              type="text"
+              [(ngModel)]="newSite.location"
+              name="location"
+              placeholder="Enter site location"
+              required
+            />
+          </div>
+
+
+          <!-- WORK TYPE -->
+
+          <div>
+            <label for="workType">
+              Work Type
+            </label>
+
+            <select
+              id="workType"
+              [(ngModel)]="newSite.workType"
+              name="workType"
+            >
+
+              <option value="">
+                Select Work
+              </option>
+
+              <option value="Complete Construction">
+                Complete Construction
+              </option>
+
+              <option value="Plaster">
+                Plaster
+              </option>
+
+              <option value="Civil Work">
+                Civil Work
+              </option>
+
+              <option value="Renovation">
+                Renovation
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+          </div>
+
+
+          <!-- CONTRACT AMOUNT -->
+
+          <div>
+            <label for="contractAmount">
+              Contract Amount
+            </label>
+
+            <input
+              id="contractAmount"
+              type="number"
+              [(ngModel)]="newSite.contractAmount"
+              name="contractAmount"
+              placeholder="0"
+              min="0"
+            />
+          </div>
+
+
+          <!-- START DATE -->
+
+          <div>
+            <label for="startDate">
+              Start Date
+            </label>
+
+            <input
+              id="startDate"
+              type="date"
+              [(ngModel)]="newSite.startDate"
+              name="startDate"
+            />
+          </div>
+
+
+          <!-- EXPECTED COMPLETION -->
+
+          <div>
+            <label for="expectedCompletionDate">
+              Expected Completion
+            </label>
+
+            <input
+              id="expectedCompletionDate"
+              type="date"
+              [(ngModel)]="newSite.expectedCompletionDate"
+              name="expectedCompletionDate"
+            />
+          </div>
+
+
+          <!-- RECEIVED AMOUNT -->
+
+          <div>
+            <label for="receivedAmount">
+              Received Amount
+            </label>
+
+            <input
+              id="receivedAmount"
+              type="number"
+              [(ngModel)]="newSite.receivedAmount"
+              name="receivedAmount"
+              placeholder="0"
+              min="0"
+            />
+          </div>
+
+
+          <!-- STATUS -->
+
+          <div>
+            <label for="status">
+              Status
+            </label>
+
+            <select
+              id="status"
+              [(ngModel)]="newSite.status"
+              name="status"
+            >
+
+              <option value="Running">
+                Running
+              </option>
+
+              <option value="Completed">
+                Completed
+              </option>
+
+              <option value="On Hold">
+                On Hold
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- NOTES -->
+
+        <div class="full-field">
+
+          <label for="notes">
+            Notes
+          </label>
+
+          <textarea
+            id="notes"
+            [(ngModel)]="newSite.notes"
+            name="notes"
+            placeholder="Additional information about this site..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- FORM BUTTONS -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="resetForm(); showForm = false"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="siteForm.invalid"
+          >
+            Save Site
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  }
+
+
+  <!-- =========================
+       SITE LIST
+  ========================== -->
+
+  <div class="sites-grid">
+
+    @if (sites.length === 0) {
+
+      <div class="empty">
+
+        <div>🏗️</div>
+
+        <h3>
+          No sites added
+        </h3>
+
+        <p>
+          Add your first construction site.
+        </p>
+
+        <button
+          type="button"
+          class="add-btn"
+          (click)="showForm = true"
+        >
+          + Add Site
+        </button>
+
+      </div>
+
+    }
+
+
+    @for (site of sites; track site._id) {
+
+      <div class="site-card">
+
+        <!-- SITE HEADER -->
+
+        <div class="site-header">
+
+          <div>
+
+            <h2>
+              {{ site.siteName }}
+            </h2>
+
+            <p>
+              {{ site.location }}
+            </p>
+
+          </div>
+
+          <span>
+            {{ site.status }}
+          </span>
+
+        </div>
+
+
+        <!-- SITE INFORMATION -->
+
+        <div class="site-info">
+
+          <div>
+            <small>
+              Client
+            </small>
+
+            <strong>
+              {{ site.clientName }}
+            </strong>
+          </div>
+
+
+          <div>
+            <small>
+              Contract
+            </small>
+
+            <strong>
+              ₹{{ site.contractAmount | number }}
+            </strong>
+          </div>
+
+
+          <div>
+            <small>
+              Received
+            </small>
+
+            <strong>
+              ₹{{ site.receivedAmount | number }}
+            </strong>
+          </div>
+
+
+          <div>
+            <small>
+              Pending
+            </small>
+
+            <strong>
+              ₹{{ site.pendingAmount || 0 | number }}
+            </strong>
+          </div>
+
+        </div>
+
+
+        <!-- EXTRA INFORMATION -->
+
+        <div class="site-extra">
+
+          @if (site.workType) {
+
+            <span>
+              🔨 {{ site.workType }}
+            </span>
+
+          }
+
+          @if (site.clientMobile) {
+
+            <span>
+              📞 {{ site.clientMobile }}
+            </span>
+
+          }
+
+        </div>
+
+
+        <!-- NOTES -->
+
+        @if (site.notes) {
+
+          <div class="site-notes">
+
+            <small>
+              Notes
+            </small>
+
+            <p>
+              {{ site.notes }}
+            </p>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

@@ -1,0 +1,782 @@
+<div class="teams-page">
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Couple / Jodi Management</h1>
+      <p>
+        Manage couples, members, site and individual daily rates
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="showForm = !showForm"
+    >
+      + Add Couple
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       ADD COUPLE FORM
+  ========================== -->
+
+  @if (showForm) {
+
+    <div class="form-card">
+
+      <h2>Add New Couple / Jodi</h2>
+
+      <form
+        (ngSubmit)="createCouple()"
+      >
+
+        <div class="form-grid">
+
+          <!-- Couple Name -->
+
+          <div>
+
+            <label>
+              Couple / Jodi Name
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="newCouple.coupleName"
+              name="coupleName"
+              placeholder="Example: Ramesh Jodi"
+            />
+
+          </div>
+
+
+          <!-- Current Site -->
+
+          <div>
+
+            <label>
+              Current Site
+            </label>
+
+            <select
+              [(ngModel)]="newCouple.currentSite"
+              name="currentSite"
+            >
+
+              <option value="">
+                No Site
+              </option>
+
+              @for (
+                site of sites;
+                track site._id
+              ) {
+
+                <option
+                  [value]="site._id"
+                >
+                  {{ site.siteName }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <!-- Payment Type -->
+
+          <div>
+
+            <label>
+              Payment Type
+            </label>
+
+            <select
+              [(ngModel)]="newCouple.paymentType"
+              name="paymentType"
+            >
+
+              <option value="Daily">
+                Daily
+              </option>
+
+              <option value="Monthly">
+                Monthly
+              </option>
+
+              <option value="Piece Rate">
+                Piece Rate
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- Joining Date -->
+
+          <div>
+
+            <label>
+              Joining Date
+            </label>
+
+            <input
+              type="date"
+              [(ngModel)]="newCouple.joiningDate"
+              name="joiningDate"
+            />
+
+          </div>
+
+
+          <!-- Status -->
+
+          <div>
+
+            <label>
+              Status
+            </label>
+
+            <select
+              [(ngModel)]="newCouple.status"
+              name="status"
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- =========================
+             MEMBERS
+        ========================== -->
+
+        <div class="members-grid">
+
+
+          <!-- MEMBER 1 -->
+
+          <div class="member-section">
+
+            <div class="member-title">
+
+              <div class="member-number">
+                1
+              </div>
+
+              <div>
+                <h3>Member 1</h3>
+                <p>First worker details</p>
+              </div>
+
+            </div>
+
+
+            <div class="member-fields">
+
+              <!-- Name -->
+
+              <div>
+
+                <label>
+                  Name
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newCouple.member1.name"
+                  name="member1Name"
+                  placeholder="Member 1 name"
+                />
+
+              </div>
+
+
+              <!-- Mobile -->
+
+              <div>
+
+                <label>
+                  Mobile
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newCouple.member1.mobile"
+                  name="member1Mobile"
+                  placeholder="Mobile number"
+                />
+
+              </div>
+
+
+              <!-- Rate -->
+
+              <div class="rate-field">
+
+                <label>
+                  Daily Rate
+                </label>
+
+                <div class="rate-input">
+
+                  <span>₹</span>
+
+                  <input
+                    type="number"
+                    [(ngModel)]="newCouple.member1.dailyRate"
+                    name="member1DailyRate"
+                    min="0"
+                    placeholder="700"
+                  />
+
+                </div>
+
+                <small>
+                  Example: ₹700/day
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- MEMBER 2 -->
+
+          <div class="member-section">
+
+            <div class="member-title">
+
+              <div class="member-number">
+                2
+              </div>
+
+              <div>
+                <h3>Member 2</h3>
+                <p>Second worker details</p>
+              </div>
+
+            </div>
+
+
+            <div class="member-fields">
+
+              <!-- Name -->
+
+              <div>
+
+                <label>
+                  Name
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newCouple.member2.name"
+                  name="member2Name"
+                  placeholder="Member 2 name"
+                />
+
+              </div>
+
+
+              <!-- Mobile -->
+
+              <div>
+
+                <label>
+                  Mobile
+                </label>
+
+                <input
+                  type="text"
+                  [(ngModel)]="newCouple.member2.mobile"
+                  name="member2Mobile"
+                  placeholder="Mobile number"
+                />
+
+              </div>
+
+
+              <!-- Rate -->
+
+              <div class="rate-field">
+
+                <label>
+                  Daily Rate
+                </label>
+
+                <div class="rate-input">
+
+                  <span>₹</span>
+
+                  <input
+                    type="number"
+                    [(ngModel)]="newCouple.member2.dailyRate"
+                    name="member2DailyRate"
+                    min="0"
+                    placeholder="500"
+                  />
+
+                </div>
+
+                <small>
+                  Example: ₹500/day
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =========================
+             RATE SUMMARY
+        ========================== -->
+
+        <div class="rate-summary">
+
+          <div>
+
+            <span>
+              Member 1 Rate
+            </span>
+
+            <strong>
+              ₹{{ formatMoney(
+                newCouple.member1.dailyRate
+              ) }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Member 2 Rate
+            </span>
+
+            <strong>
+              ₹{{ formatMoney(
+                newCouple.member2.dailyRate
+              ) }}
+            </strong>
+
+          </div>
+
+
+          <div class="total-rate">
+
+            <span>
+              Couple Total / Day
+            </span>
+
+            <strong>
+              ₹{{ formatMoney(
+                newCouple.member1.dailyRate +
+                newCouple.member2.dailyRate
+              ) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- =========================
+             NOTES
+        ========================== -->
+
+        <div class="full-field">
+
+          <label>
+            Notes
+          </label>
+
+          <textarea
+            [(ngModel)]="newCouple.notes"
+            name="notes"
+            placeholder="Additional information..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- =========================
+             ACTIONS
+        ========================== -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="cancelForm()"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="saving"
+          >
+
+            @if (saving) {
+
+              Saving...
+
+            } @else {
+
+              Save Couple
+
+            }
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  }
+
+
+  <!-- =========================
+       COUPLES TABLE
+  ========================== -->
+
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          All Couples / Jodis
+        </h2>
+
+        <p>
+          {{ couples.length }} records
+        </p>
+
+      </div>
+
+      <div class="header-summary">
+
+        <span>
+          Active Couples:
+        </span>
+
+        <strong>
+          {{ getActiveCouples() }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+      <div class="empty">
+
+        <div>
+          ⏳
+        </div>
+
+        <p>
+          Loading couples...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- EMPTY -->
+
+    @else if (couples.length === 0) {
+
+      <div class="empty">
+
+        <div>
+          👥
+        </div>
+
+        <h3>
+          No Couple / Jodi added
+        </h3>
+
+        <p>
+          Add your first couple to start managing them.
+        </p>
+
+        <button
+          type="button"
+          class="empty-add-btn"
+          (click)="showForm = true"
+        >
+          + Add Couple
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- TABLE -->
+
+    @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Couple
+              </th>
+
+              <th>
+                Member 1
+              </th>
+
+              <th>
+                Member 1 Rate
+              </th>
+
+              <th>
+                Member 2
+              </th>
+
+              <th>
+                Member 2 Rate
+              </th>
+
+              <th>
+                Total / Day
+              </th>
+
+              <th>
+                Site
+              </th>
+
+              <th>
+                Payment
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              couple of couples;
+              track couple._id
+            ) {
+
+              <tr>
+
+
+                <!-- Couple -->
+
+                <td>
+
+                  <strong>
+                    {{ couple.coupleName }}
+                  </strong>
+
+                  <small>
+                    {{ getMemberCount(couple) }}
+                    Members
+                  </small>
+
+                </td>
+
+
+                <!-- Member 1 -->
+
+                <td>
+
+                  <strong>
+                    {{ couple.member1?.name }}
+                  </strong>
+
+                  <small>
+                    {{ couple.member1?.mobile || '-' }}
+                  </small>
+
+                </td>
+
+
+                <!-- Member 1 Rate -->
+
+                <td>
+
+                  <span class="rate-badge">
+
+                    ₹{{ formatMoney(
+                      couple.member1?.dailyRate || 0
+                    ) }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- Member 2 -->
+
+                <td>
+
+                  <strong>
+                    {{ couple.member2?.name }}
+                  </strong>
+
+                  <small>
+                    {{ couple.member2?.mobile || '-' }}
+                  </small>
+
+                </td>
+
+
+                <!-- Member 2 Rate -->
+
+                <td>
+
+                  <span class="rate-badge">
+
+                    ₹{{ formatMoney(
+                      couple.member2?.dailyRate || 0
+                    ) }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- TOTAL -->
+
+                <td>
+
+                  <strong class="total-rate-text">
+
+                    ₹{{ formatMoney(
+                      getCoupleTotalRate(couple)
+                    ) }}
+
+                  </strong>
+
+                </td>
+
+
+                <!-- SITE -->
+
+                <td>
+
+                  {{ getSiteName(
+                    couple.currentSite
+                  ) }}
+
+                </td>
+
+
+                <!-- PAYMENT -->
+
+                <td>
+
+                  {{ couple.paymentType }}
+
+                </td>
+
+
+                <!-- STATUS -->
+
+                <td>
+
+                  <span
+                    class="status"
+                    [class.inactive]="
+                      couple.status === 'Inactive'
+                    "
+                  >
+
+                    {{ couple.status }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- DELETE -->
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="delete-btn"
+                    (click)="deleteCouple(couple._id)"
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

@@ -1,0 +1,1308 @@
+<div class="labour-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Labour Management</h1>
+
+      <p>
+        Manage all workers across your construction sites
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="showForm = !showForm"
+    >
+      {{ showForm ? '✕ Close Form' : '+ Add Labour' }}
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR MESSAGE
+  ====================================================== -->
+
+  @if (errorMessage) {
+
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       SUCCESS MESSAGE
+  ====================================================== -->
+
+  @if (successMessage) {
+
+    <div class="success-message">
+      {{ successMessage }}
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       SUMMARY CARDS
+  ====================================================== -->
+
+  <div class="summary-grid">
+
+    <!-- TOTAL -->
+
+    <div class="summary-card">
+
+      <div class="summary-icon">
+        👷
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Total Labour
+        </span>
+
+        <strong>
+          {{ totalLabours }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- ACTIVE -->
+
+    <div class="summary-card active-card">
+
+      <div class="summary-icon">
+        🟢
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Active
+        </span>
+
+        <strong>
+          {{ activeLabours }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- INACTIVE -->
+
+    <div class="summary-card inactive-card">
+
+      <div class="summary-icon">
+        🔴
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Inactive
+        </span>
+
+        <strong>
+          {{ inactiveLabours }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- DAILY RATE -->
+
+    <div class="summary-card rate-card">
+
+      <div class="summary-icon">
+        ₹
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Total Daily Rate
+        </span>
+
+        <strong>
+          ₹{{ totalDailyRate | number }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       ADD / EDIT LABOUR FORM
+  ====================================================== -->
+
+  @if (showForm) {
+
+    <div class="form-card">
+
+      <div class="form-title-row">
+
+        <div>
+
+          <h2>
+            {{ isEditing
+              ? 'Edit Labour'
+              : 'Add New Labour'
+            }}
+          </h2>
+
+          <p>
+            {{
+              isEditing
+                ? 'Update labour information'
+                : 'Enter labour details'
+            }}
+          </p>
+
+        </div>
+
+        @if (isEditing) {
+
+          <span class="editing-badge">
+            Editing
+          </span>
+
+        }
+
+      </div>
+
+
+      <form
+        #labourForm="ngForm"
+        (ngSubmit)="createLabour()"
+      >
+
+        <!-- =================================================
+             BASIC DETAILS
+        ================================================== -->
+
+        <div class="form-section-title">
+          Basic Details
+        </div>
+
+        <div class="form-grid">
+
+
+          <!-- NAME -->
+
+          <div>
+
+            <label for="name">
+              Labour Name
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              [(ngModel)]="newLabour.name"
+              name="name"
+              placeholder="Enter labour name"
+              required
+            />
+
+          </div>
+
+
+          <!-- MOBILE -->
+
+          <div>
+
+            <label for="mobile">
+              Mobile Number
+            </label>
+
+            <input
+              id="mobile"
+              type="tel"
+              inputmode="numeric"
+              maxlength="10"
+              [(ngModel)]="newLabour.mobile"
+              name="mobile"
+              placeholder="Enter mobile number"
+            />
+
+          </div>
+
+
+          <!-- LABOUR TYPE -->
+
+          <div>
+
+            <label for="labourType">
+              Labour Type
+            </label>
+
+            <select
+              id="labourType"
+              [(ngModel)]="newLabour.labourType"
+              name="labourType"
+              (change)="onLabourTypeChange()"
+              required
+            >
+
+              <option value="Mistri">
+                Mistri
+              </option>
+
+              <option value="Plaster Labour">
+                Plaster Labour
+              </option>
+
+              <option value="Helper">
+                Helper
+              </option>
+
+              <option value="Ladies Helper">
+                Ladies Helper
+              </option>
+
+              <option value="Couple / Jodi">
+                Couple / Jodi
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- MEMBER COUNT -->
+
+          <div>
+
+            <label for="memberCount">
+              Member Count
+            </label>
+
+            <input
+              id="memberCount"
+              type="number"
+              [(ngModel)]="newLabour.memberCount"
+              name="memberCount"
+              min="1"
+              [readonly]="
+                newLabour.labourType === 'Couple / Jodi'
+              "
+            />
+
+            @if (
+              newLabour.labourType === 'Couple / Jodi'
+            ) {
+
+              <small>
+                Couple / Jodi = exactly 2 members
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- CURRENT SITE -->
+
+          <div>
+
+            <label for="currentSite">
+              Current Site
+            </label>
+
+            <select
+              id="currentSite"
+              [(ngModel)]="newLabour.currentSite"
+              name="currentSite"
+            >
+
+              <option value="">
+                No Site
+              </option>
+
+              @for (
+                site of sites;
+                track site._id
+              ) {
+
+                <option [value]="site._id">
+                  {{ site.siteName }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <!-- JOINING DATE -->
+
+          <div>
+
+            <label for="joiningDate">
+              Joining Date
+            </label>
+
+            <input
+              id="joiningDate"
+              type="date"
+              [(ngModel)]="newLabour.joiningDate"
+              name="joiningDate"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             COUPLE / JODI MEMBERS
+        ================================================== -->
+
+        @if (
+          newLabour.labourType === 'Couple / Jodi'
+        ) {
+
+          <div class="couple-members">
+
+            <div class="couple-header">
+
+              <div>
+
+                <h3>
+                  Couple / Jodi Members
+                </h3>
+
+                <p>
+                  Exactly 2 members ki details enter karo
+                </p>
+
+              </div>
+
+              <span class="member-counter">
+                {{
+                  newLabour.members?.length || 0
+                }}
+                / 2
+              </span>
+
+            </div>
+
+
+            <div class="member-grid">
+
+              @for (
+                member of newLabour.members;
+                track $index;
+                let i = $index
+              ) {
+
+                <div class="member-card">
+
+                  <div class="member-card-header">
+
+                    <strong>
+                      Member {{ i + 1 }}
+                    </strong>
+
+                  </div>
+
+
+                  <!-- MEMBER NAME -->
+
+                  <div>
+
+                    <label>
+                      Name
+                    </label>
+
+                    <input
+                      type="text"
+                      [(ngModel)]="member.name"
+                      [name]="'memberName' + i"
+                      placeholder="Member name"
+                      required
+                    />
+
+                  </div>
+
+
+                  <!-- MEMBER MOBILE -->
+
+                  <div class="member-field">
+
+                    <label>
+                      Mobile
+                    </label>
+
+                    <input
+                      type="tel"
+                      inputmode="numeric"
+                      maxlength="10"
+                      [(ngModel)]="member.mobile"
+                      [name]="'memberMobile' + i"
+                      placeholder="Mobile number"
+                    />
+
+                  </div>
+
+
+                  <!-- MEMBER ROLE -->
+
+                  <div class="member-field">
+
+                    <label>
+                      Role
+                    </label>
+
+                    <select
+                      [(ngModel)]="member.role"
+                      [name]="'memberRole' + i"
+                    >
+
+                      <option value="Mistri">
+                        Mistri
+                      </option>
+
+                      <option value="Plaster Labour">
+                        Plaster Labour
+                      </option>
+
+                      <option value="Helper">
+                        Helper
+                      </option>
+
+                      <option value="Ladies Helper">
+                        Ladies Helper
+                      </option>
+
+                      <option value="Other">
+                        Other
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+
+        <!-- =================================================
+             PAYMENT DETAILS
+        ================================================== -->
+
+        <div class="form-section-title">
+          Payment Details
+        </div>
+
+        <div class="form-grid">
+
+
+          <!-- DAILY RATE -->
+
+          <div>
+
+            <label for="dailyRate">
+              Daily Rate
+            </label>
+
+            <input
+              id="dailyRate"
+              type="number"
+              [(ngModel)]="newLabour.dailyRate"
+              name="dailyRate"
+              placeholder="₹ 0"
+              min="0"
+            />
+
+          </div>
+
+
+          <!-- OVERTIME -->
+
+          <div>
+
+            <label for="overtimeRate">
+              Overtime Rate / Hour
+            </label>
+
+            <input
+              id="overtimeRate"
+              type="number"
+              [(ngModel)]="newLabour.overtimeRate"
+              name="overtimeRate"
+              placeholder="₹ 0"
+              min="0"
+            />
+
+          </div>
+
+
+          <!-- PAYMENT TYPE -->
+
+          <div>
+
+            <label for="paymentType">
+              Payment Type
+            </label>
+
+            <select
+              id="paymentType"
+              [(ngModel)]="newLabour.paymentType"
+              name="paymentType"
+            >
+
+              <option value="Daily">
+                Daily
+              </option>
+
+              <option value="Monthly">
+                Monthly
+              </option>
+
+              <option value="Piece Rate">
+                Piece Rate
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- STATUS -->
+
+          <div>
+
+            <label for="status">
+              Status
+            </label>
+
+            <select
+              id="status"
+              [(ngModel)]="newLabour.status"
+              name="status"
+            >
+
+              <option value="Active">
+                Active
+              </option>
+
+              <option value="Inactive">
+                Inactive
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             NOTES
+        ================================================== -->
+
+        <div class="full-field">
+
+          <label for="notes">
+            Notes
+          </label>
+
+          <textarea
+            id="notes"
+            [(ngModel)]="newLabour.notes"
+            name="notes"
+            placeholder="Additional information about this labour..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- =================================================
+             FORM BUTTONS
+        ================================================== -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeForm()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="
+              labourForm.invalid ||
+              loading
+            "
+          >
+
+            @if (loading) {
+              Saving...
+            } @else {
+              {{
+                isEditing
+                  ? 'Update Labour'
+                  : 'Save Labour'
+              }}
+            }
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       LABOUR LIST
+  ====================================================== -->
+
+  <div class="table-card">
+
+
+    <!-- ===================================================
+         TABLE HEADER
+    ==================================================== -->
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          All Labour
+        </h2>
+
+        <p>
+          {{ filteredCount }} of
+          {{ totalLabours }}
+          records
+        </p>
+
+      </div>
+
+      <div class="total-badge">
+        👷 {{ filteredCount }}
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         FILTERS
+    ==================================================== -->
+
+    <div class="filters-card">
+
+      <!-- SEARCH -->
+
+      <div class="filter-search">
+
+        <label for="labourSearch">
+          Search Labour
+        </label>
+
+        <div class="search-box">
+
+          <span>
+            🔎
+          </span>
+
+          <input
+            id="labourSearch"
+            type="search"
+            [(ngModel)]="searchText"
+            (ngModelChange)="applyFilters()"
+            placeholder="Name, mobile, type, payment or site..."
+          />
+
+        </div>
+
+      </div>
+
+
+      <div class="filter-grid">
+
+
+        <!-- SITE FILTER -->
+
+        <div>
+
+          <label for="filterSite">
+            Site
+          </label>
+
+          <select
+            id="filterSite"
+            [(ngModel)]="selectedSite"
+            (ngModelChange)="applyFilters()"
+          >
+
+            <option value="">
+              All Sites
+            </option>
+
+            @for (
+              site of sites;
+              track site._id
+            ) {
+
+              <option [value]="site._id">
+                {{ site.siteName }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- TYPE FILTER -->
+
+        <div>
+
+          <label for="filterType">
+            Labour Type
+          </label>
+
+          <select
+            id="filterType"
+            [(ngModel)]="selectedLabourType"
+            (ngModelChange)="applyFilters()"
+          >
+
+            <option value="">
+              All Types
+            </option>
+
+            <option value="Mistri">
+              Mistri
+            </option>
+
+            <option value="Plaster Labour">
+              Plaster Labour
+            </option>
+
+            <option value="Helper">
+              Helper
+            </option>
+
+            <option value="Ladies Helper">
+              Ladies Helper
+            </option>
+
+            <option value="Couple / Jodi">
+              Couple / Jodi
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- STATUS FILTER -->
+
+        <div>
+
+          <label for="filterStatus">
+            Status
+          </label>
+
+          <select
+            id="filterStatus"
+            [(ngModel)]="selectedStatus"
+            (ngModelChange)="applyFilters()"
+          >
+
+            <option value="">
+              All Status
+            </option>
+
+            <option value="Active">
+              Active
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- PAYMENT FILTER -->
+
+        <div>
+
+          <label for="filterPayment">
+            Payment Type
+          </label>
+
+          <select
+            id="filterPayment"
+            [(ngModel)]="selectedPaymentType"
+            (ngModelChange)="applyFilters()"
+          >
+
+            <option value="">
+              All Payments
+            </option>
+
+            <option value="Daily">
+              Daily
+            </option>
+
+            <option value="Monthly">
+              Monthly
+            </option>
+
+            <option value="Piece Rate">
+              Piece Rate
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- CLEAR -->
+
+        <div class="clear-filter-wrap">
+
+          <button
+            type="button"
+            class="clear-filter-btn"
+            (click)="clearFilters()"
+          >
+            ✕ Clear Filters
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         LOADING
+    ==================================================== -->
+
+    @if (loading && labours.length === 0) {
+
+      <div class="loading-box">
+
+        <div class="loading-spinner">
+          ⏳
+        </div>
+
+        Loading labour...
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         EMPTY
+    ==================================================== -->
+
+    @if (
+      !loading &&
+      labours.length === 0
+    ) {
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          👷
+        </div>
+
+        <h3>
+          No labour added
+        </h3>
+
+        <p>
+          Add your first labour to start managing workers.
+        </p>
+
+        <button
+          type="button"
+          class="empty-btn"
+          (click)="showForm = true"
+        >
+          + Add Labour
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         NO FILTER RESULT
+    ==================================================== -->
+
+    @if (
+      labours.length > 0 &&
+      filteredLabours.length === 0
+    ) {
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          🔎
+        </div>
+
+        <h3>
+          No matching labour
+        </h3>
+
+        <p>
+          Search ya filters change karke dobara try karo.
+        </p>
+
+        <button
+          type="button"
+          class="empty-btn"
+          (click)="clearFilters()"
+        >
+          Clear Filters
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         TABLE
+    ==================================================== -->
+
+    @if (
+      filteredLabours.length > 0
+    ) {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Name
+              </th>
+
+              <th>
+                Type
+              </th>
+
+              <th>
+                Members
+              </th>
+
+              <th>
+                Site
+              </th>
+
+              <th>
+                Daily Rate
+              </th>
+
+              <th>
+                OT Rate
+              </th>
+
+              <th>
+                Payment
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              labour of filteredLabours;
+              track labour._id
+            ) {
+
+              <tr>
+
+
+                <!-- =======================================
+                     NAME
+                ======================================== -->
+
+                <td>
+
+                  <div class="labour-name">
+
+                    <div class="labour-avatar">
+
+                      {{
+                        labour.name
+                          .charAt(0)
+                          .toUpperCase()
+                      }}
+
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ labour.name }}
+                      </strong>
+
+                      <small>
+                        {{
+                          labour.mobile ||
+                          'No mobile'
+                        }}
+                      </small>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- =======================================
+                     TYPE
+                ======================================== -->
+
+                <td>
+
+                  <span class="type">
+                    {{ labour.labourType }}
+                  </span>
+
+                </td>
+
+
+                <!-- =======================================
+                     MEMBERS
+                ======================================== -->
+
+                <td>
+
+                  <span class="member-count">
+
+                    {{
+                      labour.labourType ===
+                        'Couple / Jodi'
+
+                        ? getMemberNames(labour)
+
+                        : labour.memberCount
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- =======================================
+                     SITE
+                ======================================== -->
+
+                <td>
+
+                  <span class="site-text">
+
+                    {{
+                      getSiteName(
+                        labour.currentSite
+                      )
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- =======================================
+                     DAILY RATE
+                ======================================== -->
+
+                <td>
+
+                  <strong>
+                    ₹{{ labour.dailyRate | number }}
+                  </strong>
+
+                </td>
+
+
+                <!-- =======================================
+                     OT RATE
+                ======================================== -->
+
+                <td>
+
+                  ₹{{ labour.overtimeRate | number }}
+
+                </td>
+
+
+                <!-- =======================================
+                     PAYMENT
+                ======================================== -->
+
+                <td>
+
+                  {{ labour.paymentType }}
+
+                </td>
+
+
+                <!-- =======================================
+                     STATUS
+                ======================================== -->
+
+                <td>
+
+                  <span
+                    class="status"
+                    [class.inactive]="
+                      labour.status === 'Inactive'
+                    "
+                  >
+
+                    <span class="status-dot"></span>
+
+                    {{ labour.status }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- =======================================
+                     ACTION
+                ======================================== -->
+
+                <td>
+
+                  <div class="action-buttons">
+
+
+                    <!-- HISAB -->
+
+                    <button
+                      type="button"
+                      class="statement-btn"
+                      (click)="
+                        openLabourStatement(
+                          labour._id
+                        )
+                      "
+                    >
+                      📊 Hisab
+                    </button>
+
+
+                    <!-- EDIT -->
+
+                    <button
+                      type="button"
+                      class="edit-btn"
+                      (click)="editLabour(labour)"
+                    >
+                      ✏️ Edit
+                    </button>
+
+
+                    <!-- DELETE -->
+
+                    <button
+                      type="button"
+                      class="delete-btn"
+                      (click)="
+                        deleteLabour(
+                          labour._id
+                        )
+                      "
+                    >
+                      🗑️ Delete
+                    </button>
+
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

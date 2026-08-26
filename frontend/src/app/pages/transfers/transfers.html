@@ -1,0 +1,478 @@
+<div class="transfers-page">
+
+  <!-- HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        Labour Transfer
+      </h1>
+
+      <p>
+        Move labour from one construction site to another
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- TRANSFER FORM -->
+
+  <div class="form-card">
+
+    <h2>
+      Transfer Labour
+    </h2>
+
+    <form
+      #transferForm="ngForm"
+      (ngSubmit)="createTransfer()"
+    >
+
+      <div class="form-grid">
+
+
+        <!-- LABOUR -->
+
+        <div>
+
+          <label>
+            Labour
+          </label>
+
+          <select
+            [(ngModel)]="selectedLabour"
+            name="selectedLabour"
+            (change)="onLabourChange()"
+            required
+          >
+
+            <option value="">
+              Select Labour
+            </option>
+
+            @for (
+              labour of labours;
+              track labour._id
+            ) {
+
+              @if (labour.status === 'Active') {
+
+                <option
+                  [value]="labour._id"
+                >
+
+                  {{ labour.name }}
+                  —
+                  {{ labour.labourType }}
+
+                </option>
+
+              }
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- CURRENT SITE -->
+
+        <div>
+
+          <label>
+            Current Site
+          </label>
+
+          <select
+            [(ngModel)]="fromSite"
+            name="fromSite"
+            disabled
+          >
+
+            <option value="">
+              Select Labour First
+            </option>
+
+            @for (
+              site of sites;
+              track site._id
+            ) {
+
+              <option
+                [value]="site._id"
+              >
+                {{ site.siteName }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- NEW SITE -->
+
+        <div>
+
+          <label>
+            Transfer To
+          </label>
+
+          <select
+            [(ngModel)]="toSite"
+            name="toSite"
+            required
+          >
+
+            <option value="">
+              Select New Site
+            </option>
+
+            @for (
+              site of sites;
+              track site._id
+            ) {
+
+              <option
+                [value]="site._id"
+              >
+
+                {{ site.siteName }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- DATE -->
+
+        <div>
+
+          <label>
+            Transfer Date
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="transferDate"
+            name="transferDate"
+            required
+          />
+
+        </div>
+
+
+        <!-- REASON -->
+
+        <div>
+
+          <label>
+            Reason
+          </label>
+
+          <select
+            [(ngModel)]="reason"
+            name="reason"
+          >
+
+            <option value="">
+              Select Reason
+            </option>
+
+            <option value="Work completed">
+              Work completed
+            </option>
+
+            <option value="More work required">
+              More work required
+            </option>
+
+            <option value="Labour shortage">
+              Labour shortage
+            </option>
+
+            <option value="Client requirement">
+              Client requirement
+            </option>
+
+            <option value="Better work opportunity">
+              Better work opportunity
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- NOTES -->
+
+      <div class="full-field">
+
+        <label>
+          Notes
+        </label>
+
+        <textarea
+          [(ngModel)]="notes"
+          name="notes"
+          placeholder="Transfer related notes..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="resetForm()"
+        >
+          Clear
+        </button>
+
+
+        <button
+          type="submit"
+          class="save-btn"
+          [disabled]="
+            transferForm.invalid ||
+            saving
+          "
+        >
+
+          @if (saving) {
+            Transferring...
+          } @else {
+            Transfer Labour
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+
+  <!-- HISTORY -->
+
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <div>
+
+        <h2>
+          Transfer History
+        </h2>
+
+        <p>
+          {{ transfers.length }}
+          transfer records
+        </p>
+
+      </div>
+
+    </div>
+
+
+    @if (loading) {
+
+      <div class="empty">
+
+        Loading transfers...
+
+      </div>
+
+    }
+
+
+    @if (
+      !loading &&
+      transfers.length === 0
+    ) {
+
+      <div class="empty">
+
+        <div>
+          🔄
+        </div>
+
+        <h3>
+          No transfers yet
+        </h3>
+
+        <p>
+          Labour transfer karne par history yahan dikhegi.
+        </p>
+
+      </div>
+
+    }
+
+
+    @if (
+      !loading &&
+      transfers.length > 0
+    ) {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Labour
+              </th>
+
+              <th>
+                From Site
+              </th>
+
+              <th>
+                To Site
+              </th>
+
+              <th>
+                Date
+              </th>
+
+              <th>
+                Reason
+              </th>
+
+              <th>
+                Notes
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              transfer of transfers;
+              track transfer._id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <strong>
+                    {{
+                      transfer.labour?.name ||
+                      getLabourName(
+                        transfer.labour
+                      )
+                    }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <span class="site-badge">
+
+                    🏗️
+
+                    {{
+                      transfer.fromSite?.siteName ||
+                      getSiteName(
+                        transfer.fromSite
+                      )
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="site-badge">
+
+                    🏗️
+
+                    {{
+                      transfer.toSite?.siteName ||
+                      getSiteName(
+                        transfer.toSite
+                      )
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    transfer.transferDate
+                      | date:'dd MMM yyyy'
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    transfer.reason ||
+                    '-'
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  {{
+                    transfer.notes ||
+                    '-'
+                  }}
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

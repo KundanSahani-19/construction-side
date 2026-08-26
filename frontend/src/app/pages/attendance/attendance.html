@@ -1,0 +1,766 @@
+<div class="attendance-page">
+
+  <!-- HEADER -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Couple Attendance</h1>
+      <p>Manage Member 1 and Member 2 attendance separately</p>
+    </div>
+
+  </div>
+
+
+  <!-- ATTENDANCE FORM -->
+
+  <div class="attendance-card">
+
+    <div class="card-header">
+
+      <div>
+        <h2>Mark Attendance</h2>
+        <p>Select couple, site and attendance for both members</p>
+      </div>
+
+    </div>
+
+
+    <div class="form-grid">
+
+      <!-- DATE -->
+
+      <div class="form-group">
+
+        <label>Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          name="selectedDate"
+        />
+
+      </div>
+
+
+      <!-- COUPLE -->
+
+      <div class="form-group">
+
+        <label>Couple / Jodi</label>
+
+        <select
+          [(ngModel)]="selectedCoupleId"
+          name="selectedCoupleId"
+          (change)="onCoupleChange()"
+        >
+
+          <option value="">
+            Select Couple / Jodi
+          </option>
+
+          @for (
+            couple of couples;
+            track couple._id
+          ) {
+
+            <option [value]="couple._id">
+
+              {{ couple.coupleName }}
+
+              —
+              {{ couple.member1?.name }}
+
+              &
+              {{ couple.member2?.name }}
+
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- SITE -->
+
+      <div class="form-group">
+
+        <label>Site</label>
+
+        <select
+          [(ngModel)]="selectedSiteId"
+          name="selectedSiteId"
+        >
+
+          <option value="">
+            Select Site
+          </option>
+
+          @for (
+            site of sites;
+            track site._id
+          ) {
+
+            <option [value]="site._id">
+              {{ site.siteName }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- MEMBERS -->
+
+    @if (selectedCoupleId) {
+
+      <div class="members-grid">
+
+
+        <!-- MEMBER 1 -->
+
+        <div class="member-card">
+
+          <div class="member-header">
+
+            <div class="member-avatar">
+              1
+            </div>
+
+            <div>
+
+              <h3>
+                {{ getSelectedCouple()?.member1?.name }}
+              </h3>
+
+              <span>
+                Member 1
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="member-form">
+
+            <label>
+              Attendance
+            </label>
+
+            <select
+              [(ngModel)]="member1.status"
+              name="member1Status"
+              (change)="onMemberStatusChange()"
+            >
+
+              <option value="Present">
+                Present
+              </option>
+
+              <option value="Half Day">
+                Half Day
+              </option>
+
+              <option value="Absent">
+                Absent
+              </option>
+
+            </select>
+
+
+            <label>
+              Daily Amount
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="member1.amount"
+              name="member1Amount"
+              readonly
+            />
+
+
+            <label>
+              Overtime Hours
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="member1.overtimeHours"
+              name="member1OvertimeHours"
+              min="0"
+              step="0.5"
+              (input)="calculateAmounts()"
+            />
+
+
+            <label>
+              Overtime Amount
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="member1.overtimeAmount"
+              name="member1OvertimeAmount"
+              readonly
+            />
+
+
+            <label>
+              Notes
+            </label>
+
+            <textarea
+              [(ngModel)]="member1.notes"
+              name="member1Notes"
+              placeholder="Member 1 notes..."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+
+        <!-- MEMBER 2 -->
+
+        <div class="member-card">
+
+          <div class="member-header">
+
+            <div class="member-avatar">
+              2
+            </div>
+
+            <div>
+
+              <h3>
+                {{ getSelectedCouple()?.member2?.name }}
+              </h3>
+
+              <span>
+                Member 2
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="member-form">
+
+            <label>
+              Attendance
+            </label>
+
+            <select
+              [(ngModel)]="member2.status"
+              name="member2Status"
+              (change)="onMemberStatusChange()"
+            >
+
+              <option value="Present">
+                Present
+              </option>
+
+              <option value="Half Day">
+                Half Day
+              </option>
+
+              <option value="Absent">
+                Absent
+              </option>
+
+            </select>
+
+
+            <label>
+              Daily Amount
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="member2.amount"
+              name="member2Amount"
+              readonly
+            />
+
+
+            <label>
+              Overtime Hours
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="member2.overtimeHours"
+              name="member2OvertimeHours"
+              min="0"
+              step="0.5"
+              (input)="calculateAmounts()"
+            />
+
+
+            <label>
+              Overtime Amount
+            </label>
+
+            <input
+              type="number"
+              [(ngModel)]="member2.overtimeAmount"
+              name="member2OvertimeAmount"
+              readonly
+            />
+
+
+            <label>
+              Notes
+            </label>
+
+            <textarea
+              [(ngModel)]="member2.notes"
+              name="member2Notes"
+              placeholder="Member 2 notes..."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- TOTAL -->
+
+      <div class="total-card">
+
+        <div>
+
+          <span>Member 1</span>
+
+          <strong>
+            ₹{{ formatMoney(member1.amount) }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>Member 2</span>
+
+          <strong>
+            ₹{{ formatMoney(member2.amount) }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>Overtime</span>
+
+          <strong>
+
+            ₹{{ formatMoney(
+              member1.overtimeAmount +
+              member2.overtimeAmount
+            ) }}
+
+          </strong>
+
+        </div>
+
+
+        <div class="grand-total">
+
+          <span>Total Payable</span>
+
+          <strong>
+            ₹{{ formatMoney(getTotalAmount()) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- NOTES -->
+
+      <div class="full-field">
+
+        <label>
+          Attendance Notes
+        </label>
+
+        <textarea
+          [(ngModel)]="notes"
+          name="notes"
+          placeholder="Any information about today's work..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="reset-btn"
+          (click)="resetForm()"
+        >
+          Reset
+        </button>
+
+
+        <button
+          type="button"
+          class="save-btn"
+          [disabled]="saving"
+          (click)="saveAttendance()"
+        >
+
+          @if (saving) {
+
+            Saving...
+
+          } @else {
+
+            Save Attendance
+
+          }
+
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+
+
+  <!-- =========================
+       LABOUR SEARCH / STATEMENT
+  ========================== -->
+
+  <div class="statement-card">
+
+    <div class="card-header statement-header">
+      <div>
+        <h2>Labour Search & Statement</h2>
+        <p>Search labour name and see attendance, overtime and total payable.</p>
+      </div>
+
+      <button
+        type="button"
+        class="pdf-btn"
+        [disabled]="filteredAttendances.length === 0"
+        (click)="downloadLabourStatement()"
+      >
+        🖨️ Print / Save PDF
+      </button>
+    </div>
+
+    <div class="statement-filters">
+
+      <div class="form-group search-field">
+        <label>Search Labour</label>
+        <input
+          type="search"
+          [(ngModel)]="labourSearch"
+          name="labourSearch"
+          placeholder="Labour / member / couple / site name..."
+        />
+      </div>
+
+      <div class="form-group">
+        <label>From Date</label>
+        <input
+          type="date"
+          [(ngModel)]="statementFromDate"
+          name="statementFromDate"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>To Date</label>
+        <input
+          type="date"
+          [(ngModel)]="statementToDate"
+          name="statementToDate"
+        />
+      </div>
+
+      <div class="statement-actions">
+        <button
+          type="button"
+          class="reset-btn"
+          (click)="clearStatementSearch()"
+        >
+          Clear
+        </button>
+
+        <button
+          type="button"
+          class="pdf-btn"
+          [disabled]="!labourSearch.trim() || filteredAttendances.length === 0"
+          (click)="downloadLabourStatement()"
+        >
+          Download Statement
+        </button>
+      </div>
+
+    </div>
+
+    <div class="statement-summary">
+
+      <div>
+        <span>Work Days</span>
+        <strong>{{ getStatementTotalDays() }}</strong>
+      </div>
+
+      <div>
+        <span>Attendance Records</span>
+        <strong>{{ filteredAttendances.length }}</strong>
+      </div>
+
+      <div>
+        <span>Overtime</span>
+        <strong>₹{{ formatMoney(getStatementOvertime()) }}</strong>
+      </div>
+
+      <div>
+        <span>Total Earned</span>
+        <strong>₹{{ formatMoney(getStatementEarned()) }}</strong>
+      </div>
+
+      <div class="advance-box">
+        <span>Advance</span>
+        <strong>₹{{ formatMoney(getStatementAdvance()) }}</strong>
+        <small>Advance module not connected yet</small>
+      </div>
+
+      <div class="balance-box">
+        <span>Balance</span>
+        <strong>₹{{ formatMoney(getStatementBalance()) }}</strong>
+      </div>
+
+    </div>
+
+    @if (labourSearch.trim() && filteredAttendances.length === 0) {
+      <div class="statement-empty">
+        <div>🔎</div>
+        <h3>No records found</h3>
+        <p>Labour name, date range or site filter change karke try karo.</p>
+      </div>
+    }
+
+  </div>
+
+
+  <!-- HISTORY -->
+
+  <div class="history-card">
+
+    <div class="card-header">
+
+      <div>
+
+        <h2>Attendance History</h2>
+
+        <p>
+          Previous Couple / Jodi attendance records
+        </p>
+
+      </div>
+
+    </div>
+
+
+    @if (loading) {
+
+      <div class="empty-state">
+
+        <div>⏳</div>
+
+        <p>
+          Loading attendance...
+        </p>
+
+      </div>
+
+    }
+
+
+    @else if (filteredAttendances.length === 0) {
+
+      <div class="empty-state">
+
+        <div>📅</div>
+
+        <h3>
+          No attendance records
+        </h3>
+
+        <p>
+          Abhi tak koi Couple attendance add nahi hui.
+        </p>
+
+      </div>
+
+    }
+
+
+    @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Date</th>
+
+              <th>Couple</th>
+
+              <th>Site</th>
+
+              <th>Member 1</th>
+
+              <th>Member 2</th>
+
+              <th>Total</th>
+
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              attendance of filteredAttendances;
+              track attendance._id
+            ) {
+
+              <tr>
+
+                <td>
+                  {{ attendance.date | date:'dd MMM yyyy' }}
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    {{ getCoupleName(attendance.couple) }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+                  {{ getSiteName(attendance.site) }}
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="attendance-status"
+                    [class.present]="
+                      attendance.member1.status === 'Present'
+                    "
+                    [class.half]="
+                      attendance.member1.status === 'Half Day'
+                    "
+                    [class.absent]="
+                      attendance.member1.status === 'Absent'
+                    "
+                  >
+
+                    {{ attendance.member1.status }}
+
+                  </span>
+
+                  <small>
+                    ₹{{ formatMoney(attendance.member1.amount) }}
+                  </small>
+
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="attendance-status"
+                    [class.present]="
+                      attendance.member2.status === 'Present'
+                    "
+                    [class.half]="
+                      attendance.member2.status === 'Half Day'
+                    "
+                    [class.absent]="
+                      attendance.member2.status === 'Absent'
+                    "
+                  >
+
+                    {{ attendance.member2.status }}
+
+                  </span>
+
+                  <small>
+                    ₹{{ formatMoney(attendance.member2.amount) }}
+                  </small>
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    ₹{{ formatMoney(attendance.totalAmount) }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="delete-btn"
+                    (click)="deleteAttendance(attendance._id)"
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

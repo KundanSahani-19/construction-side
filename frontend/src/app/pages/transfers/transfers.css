@@ -1,0 +1,167 @@
+.transfers-page {
+  padding: 30px;
+  min-height: 100vh;
+  background: #f5f6f8;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #6b7280;
+}
+
+.form-card,
+.table-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.form-card h2,
+.table-card h2 {
+  margin-top: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  font: inherit;
+  background: white;
+}
+
+input:disabled,
+select:disabled {
+  background: #f3f4f6;
+  color: #4b5563;
+  cursor: not-allowed;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.full-field {
+  margin-top: 18px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.save-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 11px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.save-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 11px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.table-header {
+  margin-bottom: 15px;
+}
+
+.table-header p {
+  color: #6b7280;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+}
+
+th {
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.site-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 6px 9px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px;
+  color: #6b7280;
+}
+
+.empty div {
+  font-size: 42px;
+}
+
+@media (max-width: 900px) {
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transfers-page {
+    padding: 15px;
+  }
+
+}

@@ -1,0 +1,912 @@
+<div class="statement-page">
+
+  <!-- ==========================================
+       PAGE HEADER
+  =========================================== -->
+
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="back-btn"
+        (click)="goBack()"
+      >
+        ← Back
+      </button>
+
+      <div>
+        <h1>Labour Statement</h1>
+        <p>
+          Labour ka complete work aur payment hisab
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="excel-btn"
+        (click)="downloadExcel()"
+      >
+        📊 Download Excel
+      </button>
+
+      <button
+        type="button"
+        class="pdf-btn"
+        (click)="downloadPDF()"
+      >
+        📄 Download PDF
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================
+       LOADING
+  =========================================== -->
+
+  @if (loading) {
+
+    <div class="loading-card">
+
+      <div class="loading-icon">
+        ⏳
+      </div>
+
+      <h3>Loading statement...</h3>
+
+      <p>
+        Labour ka hisab prepare ho raha hai.
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- ==========================================
+       ERROR
+  =========================================== -->
+
+  @if (!loading && errorMessage) {
+
+    <div class="error-card">
+
+      <div class="error-icon">
+        ⚠️
+      </div>
+
+      <h3>Statement load nahi hua</h3>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="retry-btn"
+        (click)="loadStatement()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (!loading && !errorMessage && labour) {
+
+    <!-- ==========================================
+         LABOUR INFORMATION
+    =========================================== -->
+
+    <div class="info-card">
+
+      <div class="labour-profile">
+
+        <div class="labour-avatar">
+          {{ getInitials(labour.name) }}
+        </div>
+
+        <div class="labour-info">
+
+          <h2>
+            {{ labour.name }}
+          </h2>
+
+          <div class="labour-meta">
+
+            <span>
+              {{ labour.labourType }}
+            </span>
+
+            @if (labour.mobile) {
+              <span>
+                📱 {{ labour.mobile }}
+              </span>
+            }
+
+            <span>
+              {{ labour.status }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="rate-info">
+
+        <div>
+          <span>Daily Rate</span>
+          <strong>
+            ₹{{ labour.dailyRate | number:'1.0-2' }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Overtime Rate</span>
+          <strong>
+            ₹{{ labour.overtimeRate | number:'1.0-2' }}/hr
+          </strong>
+        </div>
+
+        <div>
+          <span>Payment Type</span>
+          <strong>
+            {{ labour.paymentType }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         SITE FILTER
+    =========================================== -->
+
+    <div class="filter-card">
+
+      <div class="filter-title">
+
+        <h3>Statement Filter</h3>
+
+        <p>
+          Kisi specific site ka hisab dekh sakte ho
+        </p>
+
+      </div>
+
+
+      <div class="filter-fields">
+
+        <div class="filter-group">
+
+          <label>Site</label>
+
+          <select
+            [(ngModel)]="selectedSiteId"
+            (change)="onSiteChange()"
+          >
+
+            <option value="">
+              All Sites
+            </option>
+
+            @for (site of sites; track site._id) {
+
+              <option [value]="site._id">
+                {{ site.siteName }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <div class="filter-group">
+
+          <label>From Date</label>
+
+          <input
+            type="date"
+            [(ngModel)]="fromDate"
+            (change)="applyFilters()"
+          />
+
+        </div>
+
+
+        <div class="filter-group">
+
+          <label>To Date</label>
+
+          <input
+            type="date"
+            [(ngModel)]="toDate"
+            (change)="applyFilters()"
+          />
+
+        </div>
+
+
+        <button
+          type="button"
+          class="clear-filter-btn"
+          (click)="clearFilters()"
+        >
+          Clear Filter
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         SUMMARY
+    =========================================== -->
+
+    <div class="summary-grid">
+
+      <!-- Total Days -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon">
+          📅
+        </div>
+
+        <div>
+
+          <span>
+            Total Work Days
+          </span>
+
+          <strong>
+            {{ totalWorkDays }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Present Days -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon present-icon">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Present Days
+          </span>
+
+          <strong>
+            {{ presentDays }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Half Days -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon half-icon">
+          ½
+        </div>
+
+        <div>
+
+          <span>
+            Half Days
+          </span>
+
+          <strong>
+            {{ halfDays }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Overtime -->
+
+      <div class="summary-card">
+
+        <div class="summary-icon overtime-icon">
+          ⏱
+        </div>
+
+        <div>
+
+          <span>
+            Overtime Hours
+          </span>
+
+          <strong>
+            {{ totalOvertimeHours }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         MONEY SUMMARY
+    =========================================== -->
+
+    <div class="money-summary">
+
+      <div class="money-card">
+
+        <span>
+          Labour Work Amount
+        </span>
+
+        <strong>
+          ₹{{ totalLabourAmount | number:'1.0-2' }}
+        </strong>
+
+        <small>
+          Attendance ke according
+        </small>
+
+      </div>
+
+
+      <div class="money-card">
+
+        <span>
+          Overtime Amount
+        </span>
+
+        <strong>
+          ₹{{ totalOvertimeAmount | number:'1.0-2' }}
+        </strong>
+
+        <small>
+          Overtime ka total
+        </small>
+
+      </div>
+
+
+      <div class="money-card paid">
+
+        <span>
+          Advance / Paid
+        </span>
+
+        <strong>
+          ₹{{ totalPaid | number:'1.0-2' }}
+        </strong>
+
+        <small>
+          Labour ko diya gaya
+        </small>
+
+      </div>
+
+
+      <div class="money-card balance">
+
+        <span>
+          Remaining Balance
+        </span>
+
+        <strong>
+          ₹{{ remainingBalance | number:'1.0-2' }}
+        </strong>
+
+        <small>
+          Abhi dena baki
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         ATTENDANCE HISTORY
+    =========================================== -->
+
+    <div class="section-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Work / Attendance History
+          </h2>
+
+          <p>
+            Labour ne kab aur kitna kaam kiya
+          </p>
+
+        </div>
+
+        <span class="record-count">
+          {{ filteredAttendances.length }} Records
+        </span>
+
+      </div>
+
+
+      @if (filteredAttendances.length === 0) {
+
+        <div class="empty-state">
+
+          <div>
+            📅
+          </div>
+
+          <h3>
+            No attendance records
+          </h3>
+
+          <p>
+            Is filter ke according koi attendance nahi mili.
+          </p>
+
+        </div>
+
+      }
+
+
+      @if (filteredAttendances.length > 0) {
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Date
+                </th>
+
+                <th>
+                  Site
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th>
+                  Day
+                </th>
+
+                <th>
+                  Daily Rate
+                </th>
+
+                <th>
+                  Overtime
+                </th>
+
+                <th>
+                  Total
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                attendance of filteredAttendances;
+                track attendance._id
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    <strong>
+                      {{ attendance.attendanceDate | date:'dd MMM yyyy' }}
+                    </strong>
+
+                  </td>
+
+
+                  <td>
+
+                    <strong>
+                      {{ getSiteName(attendance.site) }}
+                    </strong>
+
+                  </td>
+
+
+                  <td>
+
+                    <span
+                      class="status-badge"
+                      [class.present]="attendance.status === 'Present'"
+                      [class.half]="attendance.status === 'Half Day'"
+                      [class.absent]="attendance.status === 'Absent'"
+                      [class.leave]="attendance.status === 'Leave'"
+                    >
+                      {{ attendance.status }}
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ attendance.dayValue }}
+
+                  </td>
+
+
+                  <td>
+
+                    ₹{{ getAttendanceAmount(attendance) | number:'1.0-2' }}
+
+                  </td>
+
+
+                  <td>
+
+                    <div class="overtime-cell">
+
+                      <strong>
+                        {{ attendance.overtimeHours || 0 }} hr
+                      </strong>
+
+                      <small>
+                        ₹{{ attendance.overtimeAmount || 0 | number:'1.0-2' }}
+                      </small>
+
+                    </div>
+
+                  </td>
+
+
+                  <td class="total-cell">
+
+                    ₹{{ getAttendanceTotal(attendance) | number:'1.0-2' }}
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- ==========================================
+         PAYMENT HISTORY
+    =========================================== -->
+
+    <div class="section-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Payment / Advance History
+          </h2>
+
+          <p>
+            Labour ko kab aur kitne paise diye
+          </p>
+
+        </div>
+
+        <span class="record-count">
+          {{ filteredPayments.length }} Payments
+        </span>
+
+      </div>
+
+
+      @if (filteredPayments.length === 0) {
+
+        <div class="empty-state">
+
+          <div>
+            💰
+          </div>
+
+          <h3>
+            No payment records
+          </h3>
+
+          <p>
+            Is labour ke liye abhi koi payment record nahi hai.
+          </p>
+
+        </div>
+
+      }
+
+
+      @if (filteredPayments.length > 0) {
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Date
+                </th>
+
+                <th>
+                  Site
+                </th>
+
+                <th>
+                  Payment Type
+                </th>
+
+                <th>
+                  Amount
+                </th>
+
+                <th>
+                  Mode
+                </th>
+
+                <th>
+                  Reference
+                </th>
+
+                <th>
+                  Reason / Notes
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                payment of filteredPayments;
+                track payment._id
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    <strong>
+                      {{ payment.paymentDate | date:'dd MMM yyyy' }}
+                    </strong>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ getSiteName(payment.site) }}
+
+                  </td>
+
+
+                  <td>
+
+                    <span class="payment-type">
+                      {{ payment.paymentType || 'Other' }}
+                    </span>
+
+                  </td>
+
+
+                  <td class="payment-amount">
+
+                    ₹{{ payment.amount | number:'1.0-2' }}
+
+                  </td>
+
+
+                  <td>
+
+                    <span class="payment-mode">
+                      {{ payment.paymentMode }}
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ payment.referenceNumber || '-' }}
+
+                  </td>
+
+
+                  <td>
+
+                    <div class="notes-cell">
+
+                      @if (payment.reason) {
+
+                        <strong>
+                          {{ payment.reason }}
+                        </strong>
+
+                      }
+
+                      @if (payment.notes) {
+
+                        <small>
+                          {{ payment.notes }}
+                        </small>
+
+                      }
+
+                      @if (!payment.reason && !payment.notes) {
+
+                        <span>
+                          -
+                        </span>
+
+                      }
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- ==========================================
+         FINAL STATEMENT
+    =========================================== -->
+
+    <div class="final-card">
+
+      <div>
+
+        <span>
+          Total Labour Work
+        </span>
+
+        <strong>
+          ₹{{ totalLabourAmount | number:'1.0-2' }}
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span>
+          Total Overtime
+        </span>
+
+        <strong>
+          ₹{{ totalOvertimeAmount | number:'1.0-2' }}
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span>
+          Gross Amount
+        </span>
+
+        <strong>
+          ₹{{ grossAmount | number:'1.0-2' }}
+        </strong>
+
+      </div>
+
+
+      <div>
+
+        <span>
+          Total Paid
+        </span>
+
+        <strong>
+          ₹{{ totalPaid | number:'1.0-2' }}
+        </strong>
+
+      </div>
+
+
+      <div class="remaining">
+
+        <span>
+          Balance Remaining
+        </span>
+
+        <strong>
+          ₹{{ remainingBalance | number:'1.0-2' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         COMPANY FOOTER
+    =========================================== -->
+
+    <div class="company-footer">
+
+      <h2>
+        Shree Radha Construction
+      </h2>
+
+      <p>
+        9111186281 &nbsp; | &nbsp; 7000091823
+      </p>
+
+      <p>
+        Purushattam Vihar Colony, Bhind Road, 474005
+      </p>
+
+    </div>
+
+  }
+
+</div>

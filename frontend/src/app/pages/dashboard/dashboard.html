@@ -1,0 +1,1004 @@
+<div class="dashboard-page">
+
+  <!-- ==================================================
+       HEADER
+  =================================================== -->
+
+  <header class="dashboard-header">
+
+    <div class="header-content">
+
+      <span class="header-label">
+        CONSTRUCTION MANAGEMENT
+      </span>
+
+      <h1>
+        Dashboard
+      </h1>
+
+      <p>
+        Apne construction business ka complete overview
+        yahan se manage karo.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="refresh-btn"
+        (click)="refreshDashboard()"
+        [disabled]="refreshing"
+      >
+
+        <span
+          [class.spin]="refreshing"
+        >
+          ↻
+        </span>
+
+        {{ refreshing ? 'Refreshing...' : 'Refresh' }}
+
+      </button>
+
+      <button
+        type="button"
+        class="add-site-btn"
+        routerLink="/sites"
+      >
+        + Add Site
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- ==================================================
+       OVERVIEW STATISTICS
+  =================================================== -->
+
+  <section class="stats-grid">
+
+    <!-- ACTIVE SITES -->
+
+    <article class="stat-card">
+
+      <div class="stat-icon blue">
+        🏗️
+      </div>
+
+      <div class="stat-content">
+
+        <span>
+          Active Sites
+        </span>
+
+        @if (loadingSites) {
+
+          <strong class="loading-number">
+            ...
+          </strong>
+
+        } @else {
+
+          <strong>
+            {{ activeSites }}
+          </strong>
+
+        }
+
+        <small>
+          {{ totalSites }} total sites
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <!-- TOTAL LABOUR -->
+
+    <article class="stat-card">
+
+      <div class="stat-icon orange">
+        👷
+      </div>
+
+      <div class="stat-content">
+
+        <span>
+          Total Labour
+        </span>
+
+        @if (loadingLabour) {
+
+          <strong class="loading-number">
+            ...
+          </strong>
+
+        } @else {
+
+          <strong>
+            {{ totalLabourMembers }}
+          </strong>
+
+        }
+
+        <small>
+          Workers currently registered
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <!-- ACTIVE LABOUR -->
+
+    <article class="stat-card">
+
+      <div class="stat-icon green">
+        ✓
+      </div>
+
+      <div class="stat-content">
+
+        <span>
+          Active Labour
+        </span>
+
+        @if (loadingLabour) {
+
+          <strong class="loading-number">
+            ...
+          </strong>
+
+        } @else {
+
+          <strong>
+            {{ activeLabour }}
+          </strong>
+
+        }
+
+        <small>
+          {{ getActiveLabourPercentage() }}% of total labour
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <!-- TOTAL RECORDS -->
+
+    <article class="stat-card">
+
+      <div class="stat-icon purple">
+        👥
+      </div>
+
+      <div class="stat-content">
+
+        <span>
+          Labour Records
+        </span>
+
+        @if (loadingLabour) {
+
+          <strong class="loading-number">
+            ...
+          </strong>
+
+        } @else {
+
+          <strong>
+            {{ totalLabourRecords }}
+          </strong>
+
+        }
+
+        <small>
+          {{ inactiveLabour }} inactive
+        </small>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ==================================================
+       FINANCIAL OVERVIEW
+  =================================================== -->
+
+  <section class="finance-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <h2>
+          Financial Overview
+        </h2>
+
+        <p>
+          Construction sites ke current financial figures.
+        </p>
+
+      </div>
+
+      <span class="section-badge">
+        SITE BASED
+      </span>
+
+    </div>
+
+
+    <div class="money-grid">
+
+      <!-- RECEIVED -->
+
+      <article class="money-card received">
+
+        <div class="money-top">
+
+          <span>
+            Total Received
+          </span>
+
+          <div class="money-icon">
+            ₹
+          </div>
+
+        </div>
+
+        <h3>
+          ₹{{ formatMoney(totalReceived) }}
+        </h3>
+
+        <p>
+          Clients se received amount
+        </p>
+
+      </article>
+
+
+      <!-- PENDING -->
+
+      <article class="money-card pending">
+
+        <div class="money-top">
+
+          <span>
+            Payment Pending
+          </span>
+
+          <div class="money-icon">
+            ⏳
+          </div>
+
+        </div>
+
+        <h3>
+          ₹{{ formatMoney(paymentPending) }}
+        </h3>
+
+        <p>
+          Clients se receive hona baaki
+        </p>
+
+      </article>
+
+
+      <!-- CONTRACT -->
+
+      <article class="money-card contract">
+
+        <div class="money-top">
+
+          <span>
+            Contract Value
+          </span>
+
+          <div class="money-icon">
+            📋
+          </div>
+
+        </div>
+
+        <h3>
+          ₹{{ formatMoney(totalContractValue) }}
+        </h3>
+
+        <p>
+          All construction sites ka total
+        </p>
+
+      </article>
+
+
+      <!-- BALANCE -->
+
+      <article class="money-card balance">
+
+        <div class="money-top">
+
+          <span>
+            Unreceived Balance
+          </span>
+
+          <div class="money-icon">
+            💰
+          </div>
+
+        </div>
+
+        <h3>
+          ₹{{ formatMoney(paymentPending) }}
+        </h3>
+
+        <p>
+          Contract value me remaining
+        </p>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       MAIN CONTENT
+  =================================================== -->
+
+  <section class="content-grid">
+
+
+    <!-- ==================================================
+         ACTIVE SITES
+    =================================================== -->
+
+    <article class="panel sites-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            PROJECTS
+          </span>
+
+          <h2>
+            Active Sites
+          </h2>
+
+          <p>
+            Currently running construction sites
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="view-btn"
+          routerLink="/sites"
+        >
+          View All →
+        </button>
+
+      </div>
+
+
+      <div class="panel-body">
+
+        @if (loadingSites) {
+
+          <div class="state-box">
+
+            <div class="state-icon">
+              ⏳
+            </div>
+
+            <strong>
+              Loading sites...
+            </strong>
+
+            <span>
+              Site information fetch ho rahi hai.
+            </span>
+
+          </div>
+
+        } @else if (sitesError) {
+
+          <div class="state-box error-state">
+
+            <div class="state-icon">
+              !
+            </div>
+
+            <strong>
+              Sites load nahi hue
+            </strong>
+
+            <span>
+              {{ sitesError }}
+            </span>
+
+            <button
+              type="button"
+              class="retry-btn"
+              (click)="loadSites()"
+            >
+              Try Again
+            </button>
+
+          </div>
+
+        } @else if (getActiveSites().length === 0) {
+
+          <div class="state-box">
+
+            <div class="state-icon">
+              🏗️
+            </div>
+
+            <strong>
+              No active sites
+            </strong>
+
+            <span>
+              Running construction site add karo.
+            </span>
+
+            <button
+              type="button"
+              class="empty-action"
+              routerLink="/sites"
+            >
+              + Add Site
+            </button>
+
+          </div>
+
+        } @else {
+
+          <div class="site-list">
+
+            @for (
+              site of getActiveSites();
+              track site._id
+            ) {
+
+              <div class="site-row">
+
+                <div class="site-main">
+
+                  <div class="site-icon">
+                    🏗️
+                  </div>
+
+                  <div class="site-details">
+
+                    <strong>
+                      {{ site.siteName }}
+                    </strong>
+
+                    <span>
+                      {{ getSiteLocation(site) }}
+                    </span>
+
+                    <small>
+                      {{ getSiteLabourCount(site._id) }}
+                      Labour assigned
+                    </small>
+
+                  </div>
+
+                </div>
+
+
+                <div class="site-right">
+
+                  <span class="running-badge">
+                    {{ site.status }}
+                  </span>
+
+                  <strong class="site-value">
+                    ₹{{ formatMoney(getSiteValue(site)) }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+
+    <!-- ==================================================
+         LABOUR OVERVIEW
+    =================================================== -->
+
+    <article class="panel labour-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-label">
+            WORKFORCE
+          </span>
+
+          <h2>
+            Labour Overview
+          </h2>
+
+          <p>
+            Current workforce status
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="view-btn"
+          routerLink="/labour"
+        >
+          Manage →
+        </button>
+
+      </div>
+
+
+      <div class="labour-overview">
+
+        @if (loadingLabour) {
+
+          <div class="state-box compact">
+
+            <div class="state-icon">
+              ⏳
+            </div>
+
+            <strong>
+              Loading labour...
+            </strong>
+
+          </div>
+
+        } @else if (labourError) {
+
+          <div class="state-box error-state compact">
+
+            <div class="state-icon">
+              !
+            </div>
+
+            <strong>
+              Labour load nahi hua
+            </strong>
+
+            <span>
+              {{ labourError }}
+            </span>
+
+            <button
+              type="button"
+              class="retry-btn"
+              (click)="loadLabour()"
+            >
+              Try Again
+            </button>
+
+          </div>
+
+        } @else {
+
+          <div class="labour-total">
+
+            <div>
+
+              <span>
+                Total Workers
+              </span>
+
+              <strong>
+                {{ totalLabourMembers }}
+              </strong>
+
+            </div>
+
+            <div class="worker-icon">
+              👷
+            </div>
+
+          </div>
+
+
+          <div class="labour-bars">
+
+            <div class="bar-item">
+
+              <div class="bar-label">
+
+                <span>
+                  Active
+                </span>
+
+                <strong>
+                  {{ activeLabour }}
+                </strong>
+
+              </div>
+
+              <div class="progress">
+
+                <div
+                  class="progress-fill active"
+                  [style.width.%]="getActiveLabourPercentage()"
+                ></div>
+
+              </div>
+
+            </div>
+
+
+            <div class="bar-item">
+
+              <div class="bar-label">
+
+                <span>
+                  Inactive
+                </span>
+
+                <strong>
+                  {{ inactiveLabour }}
+                </strong>
+
+              </div>
+
+              <div class="progress">
+
+                <div
+                  class="progress-fill inactive"
+                  [style.width.%]="
+                    totalLabourMembers > 0
+                      ? (inactiveLabour / totalLabourMembers) * 100
+                      : 0
+                  "
+                ></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="labour-footer">
+
+            <div>
+
+              <span>
+                Labour Records
+              </span>
+
+              <strong>
+                {{ totalLabourRecords }}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                Active Workers
+              </span>
+
+              <strong class="green-text">
+                {{ activeLabour }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ==================================================
+       PAYMENT SUMMARY
+  =================================================== -->
+
+  <section class="panel payment-panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <span class="panel-label">
+          FINANCE
+        </span>
+
+        <h2>
+          Payment Summary
+        </h2>
+
+        <p>
+          Construction projects ka payment status
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="view-btn"
+        routerLink="/payments"
+      >
+        Payments →
+      </button>
+
+    </div>
+
+
+    <div class="payment-grid">
+
+      <!-- RECEIVED -->
+
+      <div class="payment-item">
+
+        <div class="payment-icon green">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Total Received
+          </span>
+
+          <strong>
+            ₹{{ formatMoney(totalReceived) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- PENDING -->
+
+      <div class="payment-item">
+
+        <div class="payment-icon orange">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Payment Pending
+          </span>
+
+          <strong>
+            ₹{{ formatMoney(paymentPending) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONTRACT -->
+
+      <div class="payment-item">
+
+        <div class="payment-icon blue">
+          ₹
+        </div>
+
+        <div>
+
+          <span>
+            Contract Value
+          </span>
+
+          <strong>
+            ₹{{ formatMoney(totalContractValue) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       QUICK ACTIONS
+  =================================================== -->
+
+  <section class="quick-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <h2>
+          Quick Actions
+        </h2>
+
+        <p>
+          Frequently used construction modules
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="quick-grid">
+
+      <!-- SITE -->
+
+      <button
+        type="button"
+        class="quick-card"
+        routerLink="/sites"
+      >
+
+        <div class="quick-icon blue">
+          🏗️
+        </div>
+
+        <strong>
+          Sites
+        </strong>
+
+        <span>
+          Manage sites
+        </span>
+
+      </button>
+
+
+      <!-- LABOUR -->
+
+      <button
+        type="button"
+        class="quick-card"
+        routerLink="/labour"
+      >
+
+        <div class="quick-icon orange">
+          👷
+        </div>
+
+        <strong>
+          Labour
+        </strong>
+
+        <span>
+          Manage workers
+        </span>
+
+      </button>
+
+
+      <!-- ATTENDANCE -->
+
+      <button
+        type="button"
+        class="quick-card"
+        routerLink="/attendance"
+      >
+
+        <div class="quick-icon green">
+          📅
+        </div>
+
+        <strong>
+          Attendance
+        </strong>
+
+        <span>
+          Mark attendance
+        </span>
+
+      </button>
+
+
+      <!-- PAYMENTS -->
+
+      <button
+        type="button"
+        class="quick-card"
+        routerLink="/payments"
+      >
+
+        <div class="quick-icon purple">
+          💰
+        </div>
+
+        <strong>
+          Payments
+        </strong>
+
+        <span>
+          Client payments
+        </span>
+
+      </button>
+
+
+      <!-- TEAMS -->
+
+      <button
+        type="button"
+        class="quick-card"
+        routerLink="/teams"
+      >
+
+        <div class="quick-icon blue">
+          👥
+        </div>
+
+        <strong>
+          Teams
+        </strong>
+
+        <span>
+          Manage teams
+        </span>
+
+      </button>
+
+
+      <!-- REPORTS -->
+
+      <button
+        type="button"
+        class="quick-card"
+        routerLink="/reports"
+      >
+
+        <div class="quick-icon red">
+          📊
+        </div>
+
+        <strong>
+          Reports
+        </strong>
+
+        <span>
+          View reports
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+</div>

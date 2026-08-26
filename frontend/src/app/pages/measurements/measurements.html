@@ -1,0 +1,1947 @@
+<div class="measurements-page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        Construction Measurements
+      </h1>
+
+      <p>
+        Construction work ka measurement,
+        quantity aur work value manage karo.
+      </p>
+
+    </div>
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="refresh-btn"
+        (click)="refreshMeasurements()"
+      >
+        🔄 Refresh
+      </button>
+
+      <button
+        type="button"
+        class="add-btn"
+        (click)="showForm = !showForm"
+      >
+        {{
+          showForm
+            ? '✕ Close'
+            : '+ Add Measurement'
+        }}
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <span>
+        Total Records
+      </span>
+
+      <strong>
+        {{ filteredMeasurements.length }}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <span>
+        Total Quantity
+      </span>
+
+      <strong>
+        {{ formatQuantity(totalQuantity) }}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <span>
+        Total Work Value
+      </span>
+
+      <strong>
+        ₹{{ formatMoney(totalWorkValue) }}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <span>
+        Completed
+      </span>
+
+      <strong>
+        {{ completedCount }}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <span>
+        Pending
+      </span>
+
+      <strong>
+        {{ pendingCount }}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card company-card">
+
+      <span>
+        Company
+      </span>
+
+      <strong>
+        Shree Radha Construction
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SMART PHOTO
+  ====================================================== -->
+
+  <div class="smart-photo-card">
+
+    <div class="card-header">
+
+      <div>
+
+        <h2>
+          📷 Smart Photo Measurement
+        </h2>
+
+        <p>
+          Photo ke saath reference dimensions
+          dekar measurement calculate karo.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="smart-photo-body">
+
+      <div class="smart-photo-upload">
+
+        <label>
+          Construction Work Photo
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onSmartPhotoSelected($event)"
+        />
+
+
+        @if (smartPhotoName) {
+
+          <div class="photo-name">
+            📷 {{ smartPhotoName }}
+          </div>
+
+        }
+
+
+        @if (smartPhotoUrl) {
+
+          <div class="smart-photo-preview">
+
+            <img
+              [src]="smartPhotoUrl"
+              alt="Construction measurement"
+            />
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <div class="smart-form-grid">
+
+        <div class="form-group">
+
+          <label>
+            Reference Length *
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="referenceLength"
+            name="referenceLength"
+            (input)="calculateSmartMeasurement()"
+            placeholder="Example: 20"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Reference Width *
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="referenceWidth"
+            name="referenceWidth"
+            (input)="calculateSmartMeasurement()"
+            placeholder="Example: 30"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Unit
+          </label>
+
+          <select
+            [(ngModel)]="smartUnit"
+            name="smartUnit"
+            (change)="calculateSmartMeasurement()"
+          >
+
+            <option value="sq.ft">
+              Square Feet
+            </option>
+
+            <option value="sq.m">
+              Square Meter
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Rate / {{ smartUnit }}
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="smartRate"
+            name="smartRate"
+            (input)="calculateSmartMeasurement()"
+            placeholder="₹ Rate"
+          />
+
+        </div>
+
+      </div>
+
+
+      <div class="smart-result-card">
+
+        <div>
+
+          <span>
+            Formula
+          </span>
+
+          <strong>
+            Length × Width
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Quantity
+          </span>
+
+          <strong>
+            {{ formatQuantity(smartQuantity) }}
+            {{ smartUnit }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Rate
+          </span>
+
+          <strong>
+            ₹{{ formatMoney(smartRate) }}
+          </strong>
+
+        </div>
+
+
+        <div class="smart-total">
+
+          <span>
+            Total Work Value
+          </span>
+
+          <strong>
+            ₹{{ formatMoney(smartAmount) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="full-field">
+
+        <label>
+          Smart Measurement Notes
+        </label>
+
+        <textarea
+          [(ngModel)]="smartNotes"
+          name="smartNotes"
+          placeholder="Example: First floor front wall..."
+        ></textarea>
+
+      </div>
+
+
+      <div class="smart-actions">
+
+        <button
+          type="button"
+          class="calculate-smart-btn"
+          (click)="calculateSmartMeasurement()"
+        >
+          📐 Calculate
+        </button>
+
+
+        <button
+          type="button"
+          class="apply-smart-btn"
+          (click)="useSmartMeasurement()"
+        >
+          ✓ Use Measurement
+        </button>
+
+
+        <button
+          type="button"
+          class="reset-smart-btn"
+          (click)="resetSmartPhoto()"
+        >
+          Reset
+        </button>
+
+      </div>
+
+
+      <div class="smart-info">
+
+        <strong>
+          Important:
+        </strong>
+
+        Photo alone exact real-world
+        measurement calculate nahi kar sakti.
+        Accurate result ke liye reference
+        dimension dena zaroori hai.
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       ADD / EDIT FORM
+  ====================================================== -->
+
+  @if (showForm) {
+
+    <div class="form-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <h2>
+
+            {{
+              isEditing
+                ? 'Edit Construction Measurement'
+                : 'Add Construction Measurement'
+            }}
+
+          </h2>
+
+          <p>
+
+            {{
+              isEditing
+                ? 'Existing measurement ko update karo.'
+                : 'Work ka measurement enter karo.'
+            }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <form
+        (ngSubmit)="createMeasurement()"
+      >
+
+        <div class="form-grid">
+
+          <!-- SITE -->
+
+          <div class="form-group">
+
+            <label>
+              Construction Site *
+            </label>
+
+            <select
+              [(ngModel)]="newMeasurement.site"
+              name="site"
+              required
+            >
+
+              <option value="">
+                Select Site
+              </option>
+
+              @for (
+                site of sites;
+                track site._id
+              ) {
+
+                <option
+                  [value]="site._id"
+                >
+                  {{ site.siteName }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <!-- WORK -->
+
+          <div class="form-group">
+
+            <label>
+              Work Type *
+            </label>
+
+            <select
+              [(ngModel)]="newMeasurement.workType"
+              name="workType"
+            >
+
+              <option value="Plaster">
+                Plaster
+              </option>
+
+              <option value="Brick Work">
+                Brick Work
+              </option>
+
+              <option value="Concrete">
+                Concrete
+              </option>
+
+              <option value="Flooring">
+                Flooring
+              </option>
+
+              <option value="Painting">
+                Painting
+              </option>
+
+              <option value="Tiles">
+                Tiles
+              </option>
+
+              <option value="Shuttering">
+                Shuttering
+              </option>
+
+              <option value="Excavation">
+                Excavation
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- DATE -->
+
+          <div class="form-group">
+
+            <label>
+              Measurement Date *
+            </label>
+
+            <input
+              type="date"
+              [(ngModel)]="newMeasurement.measurementDate"
+              name="measurementDate"
+              required
+            />
+
+          </div>
+
+
+          <!-- UNIT -->
+
+          <div class="form-group">
+
+            <label>
+              Measurement Unit
+            </label>
+
+            <select
+              [(ngModel)]="newMeasurement.unit"
+              name="unit"
+              (change)="calculateMeasurement()"
+            >
+
+              <option value="sq.ft">
+                Square Feet
+              </option>
+
+              <option value="sq.m">
+                Square Meter
+              </option>
+
+              <option value="cu.ft">
+                Cubic Feet
+              </option>
+
+              <option value="cu.m">
+                Cubic Meter
+              </option>
+
+              <option value="running.ft">
+                Running Feet
+              </option>
+
+              <option value="piece">
+                Piece
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- LENGTH -->
+
+          <div class="form-group">
+
+            <label>
+              Length
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="newMeasurement.length"
+              name="length"
+              (input)="calculateMeasurement()"
+              placeholder="Length"
+            />
+
+          </div>
+
+
+          <!-- WIDTH -->
+
+          <div class="form-group">
+
+            <label>
+              Width
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="newMeasurement.width"
+              name="width"
+              (input)="calculateMeasurement()"
+              placeholder="Width"
+            />
+
+          </div>
+
+
+          <!-- HEIGHT -->
+
+          <div class="form-group">
+
+            <label>
+              Height
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="newMeasurement.height"
+              name="height"
+              (input)="calculateMeasurement()"
+              placeholder="For cubic work"
+            />
+
+          </div>
+
+
+          <!-- RATE -->
+
+          <div class="form-group">
+
+            <label>
+              Rate / {{ newMeasurement.unit }}
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="newMeasurement.rate"
+              name="rate"
+              (input)="calculateMeasurement()"
+              placeholder="₹ Rate"
+            />
+
+          </div>
+
+
+          <!-- STATUS -->
+
+          <div class="form-group">
+
+            <label>
+              Status
+            </label>
+
+            <select
+              [(ngModel)]="newMeasurement.status"
+              name="status"
+            >
+
+              <option value="Pending">
+                Pending
+              </option>
+
+              <option value="Calculated">
+                Calculated
+              </option>
+
+              <option value="Completed">
+                Completed
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- CALCULATION -->
+
+        <div class="calculation-card">
+
+          <div>
+
+            <span>
+              Formula
+            </span>
+
+            @if (
+              newMeasurement.unit === 'sq.ft' ||
+              newMeasurement.unit === 'sq.m'
+            ) {
+
+              <strong>
+                Length × Width
+              </strong>
+
+            }
+
+            @else if (
+              newMeasurement.unit === 'cu.ft' ||
+              newMeasurement.unit === 'cu.m'
+            ) {
+
+              <strong>
+                Length × Width × Height
+              </strong>
+
+            }
+
+            @else if (
+              newMeasurement.unit === 'running.ft'
+            ) {
+
+              <strong>
+                Length
+              </strong>
+
+            }
+
+            @else {
+
+              <strong>
+                Number of Pieces
+              </strong>
+
+            }
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Quantity
+            </span>
+
+            <strong>
+              {{ formatQuantity(newMeasurement.quantity) }}
+              {{ newMeasurement.unit }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Rate
+            </span>
+
+            <strong>
+              ₹{{ formatMoney(newMeasurement.rate) }}
+            </strong>
+
+          </div>
+
+
+          <div class="amount-result">
+
+            <span>
+              Total Work Value
+            </span>
+
+            <strong>
+              ₹{{ formatMoney(newMeasurement.totalAmount) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- PHOTO -->
+
+        <div class="photo-section">
+
+          <label>
+            Construction Work Photo
+          </label>
+
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onPhotoSelected($event)"
+          />
+
+
+          @if (selectedPhotoName) {
+
+            <div class="photo-name">
+              📷 {{ selectedPhotoName }}
+            </div>
+
+          }
+
+
+          @if (newMeasurement.photoUrl) {
+
+            <div class="photo-preview">
+
+              <img
+                [src]="newMeasurement.photoUrl"
+                alt="Construction measurement"
+              />
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <!-- NOTES -->
+
+        <div class="full-field">
+
+          <label>
+            Notes
+          </label>
+
+          <textarea
+            [(ngModel)]="newMeasurement.notes"
+            name="notes"
+            placeholder="Measurement ke related notes..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="reset-btn"
+            (click)="resetForm()"
+          >
+            Reset
+          </button>
+
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeForm()"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="loading"
+          >
+
+            @if (loading) {
+
+              Saving...
+
+            }
+
+            @else if (isEditing) {
+
+              Update Measurement
+
+            }
+
+            @else {
+
+              Save Measurement
+
+            }
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       HISTORY
+  ====================================================== -->
+
+  <div class="table-card">
+
+    <div class="card-header measurement-history-header">
+
+      <div>
+
+        <h2>
+          Measurement History
+        </h2>
+
+        <p>
+          All construction work measurements
+        </p>
+
+      </div>
+
+
+      <div class="download-actions">
+
+        <button
+          type="button"
+          class="download-btn"
+          (click)="refreshMeasurements()"
+        >
+          🔄 Refresh
+        </button>
+
+
+        <button
+          type="button"
+          class="download-btn pdf-btn"
+          (click)="downloadMeasurementsPDF()"
+          [disabled]="filteredMeasurements.length === 0"
+        >
+          📄 PDF
+        </button>
+
+
+        <button
+          type="button"
+          class="download-btn excel-btn"
+          (click)="downloadMeasurementsExcel()"
+          [disabled]="filteredMeasurements.length === 0"
+        >
+          📊 Excel
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         FILTERS
+    ==================================================== -->
+
+    <div class="filter-panel">
+
+      <div class="filter-field search-field">
+
+        <label>
+          Search
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (input)="applyFilters()"
+          placeholder="Site, work, notes, ID..."
+        />
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Site
+        </label>
+
+        <select
+          [(ngModel)]="filterSite"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Sites
+          </option>
+
+          @for (
+            site of sites;
+            track site._id
+          ) {
+
+            <option
+              [value]="site._id"
+            >
+              {{ site.siteName }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Work Type
+        </label>
+
+        <select
+          [(ngModel)]="filterWorkType"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Work
+          </option>
+
+          <option value="Plaster">
+            Plaster
+          </option>
+
+          <option value="Brick Work">
+            Brick Work
+          </option>
+
+          <option value="Concrete">
+            Concrete
+          </option>
+
+          <option value="Flooring">
+            Flooring
+          </option>
+
+          <option value="Painting">
+            Painting
+          </option>
+
+          <option value="Tiles">
+            Tiles
+          </option>
+
+          <option value="Shuttering">
+            Shuttering
+          </option>
+
+          <option value="Excavation">
+            Excavation
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Status
+        </label>
+
+        <select
+          [(ngModel)]="filterStatus"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Status
+          </option>
+
+          <option value="Pending">
+            Pending
+          </option>
+
+          <option value="Calculated">
+            Calculated
+          </option>
+
+          <option value="Completed">
+            Completed
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Unit
+        </label>
+
+        <select
+          [(ngModel)]="filterUnit"
+          (change)="applyFilters()"
+        >
+
+          <option value="">
+            All Units
+          </option>
+
+          <option value="sq.ft">
+            sq.ft
+          </option>
+
+          <option value="sq.m">
+            sq.m
+          </option>
+
+          <option value="cu.ft">
+            cu.ft
+          </option>
+
+          <option value="cu.m">
+            cu.m
+          </option>
+
+          <option value="running.ft">
+            running.ft
+          </option>
+
+          <option value="piece">
+            piece
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          From Date
+        </label>
+
+        <input
+          type="date"
+          [(ngModel)]="filterFromDate"
+          (change)="applyFilters()"
+        />
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          To Date
+        </label>
+
+        <input
+          type="date"
+          [(ngModel)]="filterToDate"
+          (change)="applyFilters()"
+        />
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label>
+          Sort
+        </label>
+
+        <select
+          [(ngModel)]="sortBy"
+          (change)="applyFilters()"
+        >
+
+          <option value="date-desc">
+            Newest First
+          </option>
+
+          <option value="date-asc">
+            Oldest First
+          </option>
+
+          <option value="amount-high">
+            Amount High → Low
+          </option>
+
+          <option value="amount-low">
+            Amount Low → High
+          </option>
+
+          <option value="quantity-high">
+            Quantity High → Low
+          </option>
+
+          <option value="quantity-low">
+            Quantity Low → High
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="clear-filter-btn"
+        (click)="clearFilters()"
+      >
+        ✕ Clear Filters
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         LOADING
+    ==================================================== -->
+
+    @if (
+      loadingMeasurements &&
+      measurements.length === 0
+    ) {
+
+      <div class="empty-state">
+
+        <div>
+          ⏳
+        </div>
+
+        <h3>
+          Loading measurements...
+        </h3>
+
+        <p>
+          Please wait.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         EMPTY
+    ==================================================== -->
+
+    @if (
+      !loadingMeasurements &&
+      measurements.length === 0
+    ) {
+
+      <div class="empty-state">
+
+        <div>
+          📐
+        </div>
+
+        <h3>
+          No measurements yet
+        </h3>
+
+        <p>
+          Add your first construction measurement.
+        </p>
+
+      </div>
+
+    }
+
+
+    @if (
+      !loadingMeasurements &&
+      measurements.length > 0 &&
+      filteredMeasurements.length === 0
+    ) {
+
+      <div class="empty-state">
+
+        <div>
+          🔎
+        </div>
+
+        <h3>
+          No matching measurements
+        </h3>
+
+        <p>
+          Filters change karke dobara try karo.
+        </p>
+
+        <button
+          type="button"
+          class="clear-filter-btn"
+          (click)="clearFilters()"
+        >
+          Clear Filters
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         TABLE
+    ==================================================== -->
+
+    @if (
+      filteredMeasurements.length > 0
+    ) {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Date
+              </th>
+
+              <th>
+                Site
+              </th>
+
+              <th>
+                Work
+              </th>
+
+              <th>
+                Measurement
+              </th>
+
+              <th>
+                Quantity
+              </th>
+
+              <th>
+                Rate
+              </th>
+
+              <th>
+                Amount
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Photo
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              measurement of filteredMeasurements;
+              track measurement._id
+            ) {
+
+              <tr>
+
+                <td>
+                  {{
+                    measurement.measurementDate
+                      | date:'dd MMM yyyy'
+                  }}
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    {{
+                      getSiteName(
+                        measurement.site
+                      )
+                    }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <span class="work-badge">
+                    {{ measurement.workType }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <div class="measurement-value">
+
+                    <strong>
+
+                      {{ measurement.length }}
+
+                      ×
+
+                      {{ measurement.width }}
+
+                      @if (
+                        measurement.unit === 'cu.ft' ||
+                        measurement.unit === 'cu.m'
+                      ) {
+
+                        ×
+
+                        {{ measurement.height }}
+
+                      }
+
+                    </strong>
+
+                    <small>
+                      {{ measurement.unit }}
+                    </small>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    {{
+                      formatQuantity(
+                        measurement.quantity
+                      )
+                    }}
+                  </strong>
+
+                  <small>
+                    {{ measurement.unit }}
+                  </small>
+
+                </td>
+
+
+                <td>
+                  ₹{{
+                    formatMoney(
+                      measurement.rate
+                    )
+                  }}
+                </td>
+
+
+                <td class="amount-cell">
+
+                  ₹{{
+                    formatMoney(
+                      measurement.totalAmount
+                    )
+                  }}
+
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [class.pending]="
+                      measurement.status === 'Pending'
+                    "
+                    [class.calculated]="
+                      measurement.status === 'Calculated'
+                    "
+                    [class.completed]="
+                      measurement.status === 'Completed'
+                    "
+                  >
+
+                    {{
+                      measurement.status ||
+                      'Calculated'
+                    }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  @if (
+                    hasPhoto(measurement)
+                  ) {
+
+                    <a
+                      class="photo-link"
+                      [href]="measurement.photoUrl"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      📷 View
+                    </a>
+
+                  }
+
+                  @else {
+
+                    <span class="no-photo">
+                      -
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <td>
+
+                  <div class="action-buttons">
+
+                    <button
+                      type="button"
+                      class="view-btn"
+                      (click)="viewMeasurement(measurement)"
+                    >
+                      View
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="edit-btn"
+                      (click)="editMeasurement(measurement)"
+                    >
+                      Edit
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="delete-btn"
+                      (click)="deleteMeasurement(measurement._id)"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       DETAILS MODAL
+  ====================================================== -->
+
+  @if (
+    showDetails &&
+    selectedMeasurement
+  ) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeDetails()"
+    >
+
+      <div
+        class="details-modal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+              Measurement Details
+            </h2>
+
+            <p>
+              Complete measurement information
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="modal-close"
+            (click)="closeDetails()"
+          >
+            ✕
+          </button>
+
+        </div>
+
+
+        <div class="details-grid">
+
+          <div class="detail-item">
+
+            <span>
+              Site
+            </span>
+
+            <strong>
+              {{
+                getSiteName(
+                  selectedMeasurement.site
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Work Type
+            </span>
+
+            <strong>
+              {{ selectedMeasurement.workType }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Date
+            </span>
+
+            <strong>
+              {{
+                selectedMeasurement.measurementDate
+                  | date:'dd MMM yyyy'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Unit
+            </span>
+
+            <strong>
+              {{ selectedMeasurement.unit }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Length
+            </span>
+
+            <strong>
+              {{ selectedMeasurement.length }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Width
+            </span>
+
+            <strong>
+              {{ selectedMeasurement.width }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Height
+            </span>
+
+            <strong>
+              {{ selectedMeasurement.height }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Quantity
+            </span>
+
+            <strong>
+              {{
+                formatQuantity(
+                  selectedMeasurement.quantity
+                )
+              }}
+              {{ selectedMeasurement.unit }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Rate
+            </span>
+
+            <strong>
+              ₹{{
+                formatMoney(
+                  selectedMeasurement.rate
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Total Amount
+            </span>
+
+            <strong class="detail-total">
+              ₹{{
+                formatMoney(
+                  selectedMeasurement.totalAmount
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Status
+            </span>
+
+            <strong>
+              {{
+                selectedMeasurement.status
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Record ID
+            </span>
+
+            <strong class="small-id">
+              {{ selectedMeasurement._id }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        @if (
+          selectedMeasurement.notes
+        ) {
+
+          <div class="detail-notes">
+
+            <span>
+              Notes
+            </span>
+
+            <p>
+              {{ selectedMeasurement.notes }}
+            </p>
+
+          </div>
+
+        }
+
+
+        @if (
+          selectedMeasurement.aiAnalysis
+        ) {
+
+          <div class="detail-notes">
+
+            <span>
+              AI Analysis
+            </span>
+
+            <p>
+              {{ selectedMeasurement.aiAnalysis }}
+            </p>
+
+          </div>
+
+        }
+
+
+        @if (
+          selectedMeasurement.photoUrl
+        ) {
+
+          <div class="detail-photo">
+
+            <span>
+              Construction Photo
+            </span>
+
+            <img
+              [src]="selectedMeasurement.photoUrl"
+              alt="Measurement"
+            />
+
+          </div>
+
+        }
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="edit-btn"
+            (click)="
+              closeDetails();
+              editMeasurement(selectedMeasurement)
+            "
+          >
+            ✏️ Edit
+          </button>
+
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeDetails()"
+          >
+            Close
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+
+  <div class="company-footer">
+
+    <strong>
+      Shree Radha Construction
+    </strong>
+
+    <span>
+      📞 9111186281 | 7000091823
+    </span>
+
+    <span>
+      📍 Purushattam Vihar Colony,
+      Bhind Road, 474005
+    </span>
+
+  </div>
+
+</div>

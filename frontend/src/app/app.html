@@ -1,0 +1,328 @@
+<div
+  class="app-layout"
+  [class.sidebar-collapsed]="sidebarCollapsed"
+  [class.sidebar-open]="sidebarOpen"
+>
+
+  <!-- ==========================================
+       MOBILE HEADER
+  =========================================== -->
+
+  <header class="mobile-header">
+
+    <button
+      type="button"
+      class="mobile-menu-btn"
+      aria-label="Open navigation"
+      (click)="toggleSidebar()"
+    >
+      ☰
+    </button>
+
+    <div class="mobile-brand">
+
+      <div class="mobile-brand-icon">
+        SR
+      </div>
+
+      <div>
+        <strong>
+          Shree Radha Construction
+        </strong>
+
+        <span>
+          Site Management
+        </span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- ==========================================
+       SIDEBAR OVERLAY
+  =========================================== -->
+
+  @if (sidebarOpen) {
+
+    <button
+      type="button"
+      class="sidebar-overlay"
+      aria-label="Close navigation"
+      (click)="closeSidebar()"
+    ></button>
+
+  }
+
+
+  <!-- ==========================================
+       SIDEBAR
+  =========================================== -->
+
+  <aside class="sidebar">
+
+    <!-- BRAND -->
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        SR
+      </div>
+
+      <div class="brand-text">
+
+        <h2>
+          Shree Radha
+        </h2>
+
+        <span>
+          Construction
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="collapse-btn"
+        aria-label="Collapse sidebar"
+        (click)="toggleSidebarCollapse()"
+      >
+        ‹
+      </button>
+
+    </div>
+
+
+    <!-- ========================================
+         NAVIGATION
+    ========================================= -->
+
+    <nav
+      class="navigation"
+      aria-label="Main navigation"
+    >
+
+      <!-- MAIN -->
+
+      <div class="nav-section-title">
+        MAIN
+      </div>
+
+
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">⌂</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+
+
+      <!-- PROJECTS -->
+
+      <div class="nav-section-title">
+        PROJECTS
+      </div>
+
+
+      <a
+        routerLink="/sites"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">🏗️</span>
+        <span class="nav-text">Sites</span>
+      </a>
+
+
+      <a
+        routerLink="/materials"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">📦</span>
+        <span class="nav-text">Materials</span>
+      </a>
+
+
+      <a
+        routerLink="/measurements"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">📐</span>
+        <span class="nav-text">Measurements</span>
+      </a>
+
+
+      <!-- WORKFORCE -->
+
+      <div class="nav-section-title">
+        WORKFORCE
+      </div>
+
+
+      <a
+        routerLink="/labour"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">👷</span>
+        <span class="nav-text">Labour</span>
+      </a>
+
+
+      <a
+        routerLink="/teams"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">👥</span>
+        <span class="nav-text">Teams / Jodi</span>
+      </a>
+
+
+      <a
+        routerLink="/attendance"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">📅</span>
+        <span class="nav-text">Attendance</span>
+      </a>
+
+
+      <a
+        routerLink="/transfers"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">🔄</span>
+        <span class="nav-text">Labour Transfers</span>
+      </a>
+
+
+      <!-- FINANCE -->
+
+      <div class="nav-section-title">
+        FINANCE
+      </div>
+
+
+      <a
+        routerLink="/payroll"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">💰</span>
+        <span class="nav-text">Payroll</span>
+      </a>
+
+
+      <a
+        routerLink="/payments"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">💳</span>
+        <span class="nav-text">Client Payments</span>
+      </a>
+
+
+      <a
+        routerLink="/expenses"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">🧾</span>
+        <span class="nav-text">Expenses</span>
+      </a>
+
+
+      <!-- REPORTS -->
+
+      <div class="nav-section-title">
+        REPORTS
+      </div>
+
+
+      <a
+        routerLink="/reports"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Reports</span>
+      </a>
+
+    </nav>
+
+
+    <!-- ========================================
+         SIDEBAR BOTTOM
+    ========================================= -->
+
+    <div class="sidebar-bottom">
+
+      <a
+        routerLink="/settings"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Settings</span>
+      </a>
+
+
+      <div class="user-box">
+
+        <div class="user-avatar">
+          K
+        </div>
+
+        <div class="user-info">
+
+          <strong>
+            Admin
+          </strong>
+
+          <small>
+            Owner
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ==========================================
+       MAIN CONTENT
+  =========================================== -->
+
+  <main class="main-content">
+
+    <router-outlet></router-outlet>
+
+  </main>
+
+</div>
